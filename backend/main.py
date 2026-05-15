@@ -68,41 +68,51 @@ def index_text(text: str, source_label: str):
 async def upload_pdf(files: list[UploadFile] = File(...)):
     try:
         import io
-        class FileWrapper:
-            def __init__(self, content, name):
-                self._content = content
-                self.name = name
-            def read(self, *args):
-                return self._content
+        from pypdf import PdfReader
 
-        wrapped = []
+        all_chunks, meta = [], []
+        total_pages = 0
+        full_text = ""
+
         for f in files:
             content = await f.read()
-            wrapped.append(FileWrapper(io.BytesIO(content), f.filename))
+            pdf_bytes = io.BytesIO(content)
+            pdf = PdfReader(pdf_bytes)
+            total_pages += len(pdf.pages)
 
-        chunks, metas, pages, full_text = extract_text_from_pdfs(wrapped)
+            for i, page in enumerate(pdf.pages):
+                text = page.extract_text() or ""
+                full_text += text + "\n"
+                if text.strip():
+                    from langchain_text_splitters import RecursiveCharacterTextSplitter
+                    splitter = RecursiveCharacterTextSplitter(chunk_size=600, chunk_overlap=80)
+                    chunks = splitter.split_text(text)
+                    for chunk in chunks:
+                        all_chunks.append(chunk)
+                        meta.append({"source": f.filename, "page": i + 1})
+
         embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
-        vs = FAISS.from_texts(chunks, embeddings, metadatas=metas)
+        vs = FAISS.from_texts(all_chunks, embeddings, metadatas=meta)
 
         llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
         dna = generate_document_dna(full_text, llm)
         doc_language = dna.get("language", "English") if dna else "English"
 
-        store["vectorstore"] = vs
-        store["full_text"] = full_text
-        store["pdf_names"] = [f.filename for f in files]
-        store["total_pages"] = pages
-        store["total_chunks"] = len(chunks)
-        store["dna"] = dna
+        store["vectorstore"]  = vs
+        store["full_text"]    = full_text
+        store["pdf_names"]    = [f.filename for f in files]
+        store["total_pages"]  = total_pages
+        store["total_chunks"] = len(all_chunks)
+        store["dna"]          = dna
         store["doc_language"] = doc_language
-        store["source_type"] = "pdf"
+        store["source_type"]  = "pdf"
         store["chat_history"] = []
 
         return {
             "success": True,
             "pdf_names": store["pdf_names"],
-            "total_pages": pages,
-            "total_chunks": len(chunks),
+            "total_pages": total_pages,
+            "total_chunks": len(all_chunks),
             "dna": dna,
             "doc_language": doc_language,
             "source_type": "pdf"
@@ -114,7 +124,13 @@ async def upload_pdf(files: list[UploadFile] = File(...)):
 @app.post("/api/upload/web")
 async def upload_web(url: str = Form(...)):
     try:
-        headers = {"User-Agent": "Mozilla/5.0"}
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Accept-Encoding": "gzip, deflate",
+            "Connection": "keep-alive",
+        }
         resp = requests.get(url, headers=headers, timeout=12)
         resp.raise_for_status()
         soup = BeautifulSoup(resp.text, "html.parser")
@@ -128,25 +144,20 @@ async def upload_web(url: str = Form(...)):
                 texts.append(t)
         full_text = "\n\n".join(texts)
         if len(full_text.strip()) < 200:
-            return JSONResponse(status_code=400, content={"error": "Not enough text on this page."})
+            return JSONResponse(status_code=400, content={"error": "Not enough text extracted. This site may block scrapers."})
 
         vs, chunk_count = index_text(full_text, title)
-        store["vectorstore"] = vs
-        store["full_text"] = full_text
-        store["pdf_names"] = [title]
-        store["total_pages"] = 1
+        store["vectorstore"]  = vs
+        store["full_text"]    = full_text
+        store["pdf_names"]    = [title]
+        store["total_pages"]  = 1
         store["total_chunks"] = chunk_count
-        store["dna"] = None
+        store["dna"]          = None
         store["doc_language"] = "English"
-        store["source_type"] = "web"
+        store["source_type"]  = "web"
         store["chat_history"] = []
 
-        return {
-            "success": True,
-            "title": title,
-            "total_chunks": chunk_count,
-            "source_type": "web"
-        }
+        return {"success": True, "title": title, "total_chunks": chunk_count, "source_type": "web"}
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
 
@@ -164,10 +175,18 @@ async def upload_youtube(url: str = Form(...)):
             fetched = api.fetch(video_id, languages=["en", "en-US", "en-GB"])
             segments = [{"text": s.text, "start": s.start, "duration": s.duration} for s in fetched]
         except Exception:
-            transcript_list = api.list(video_id)
-            available = list(transcript_list)
-            fetched = api.fetch(video_id, languages=[available[0].language_code])
-            segments = [{"text": s.text, "start": s.start, "duration": s.duration} for s in fetched]
+            try:
+                transcript_list = api.list(video_id)
+                available = list(transcript_list)
+                if not available:
+                    return JSONResponse(status_code=400, content={"error": "No transcripts available for this video."})
+                fetched = api.fetch(video_id, languages=[available[0].language_code])
+                segments = [{"text": s.text, "start": s.start, "duration": s.duration} for s in fetched]
+            except Exception as e2:
+                return JSONResponse(status_code=400, content={
+                    "error": "YouTube is blocking transcript requests from cloud servers. "
+                             "This is a known limitation. Try a different video or run the app locally."
+                })
 
         full_text = " ".join([s["text"] for s in segments])
         vs, chunk_count = index_text(full_text, f"youtube/{video_id}")
@@ -177,23 +196,17 @@ async def upload_youtube(url: str = Form(...)):
         s_dur = int(duration_sec) % 60
         duration = f"{m_dur}:{s_dur:02d}"
 
-        store["vectorstore"] = vs
-        store["full_text"] = full_text
-        store["pdf_names"] = [f"YouTube: {url[:50]}"]
-        store["total_pages"] = 1
+        store["vectorstore"]  = vs
+        store["full_text"]    = full_text
+        store["pdf_names"]    = [f"YouTube: {url[:50]}"]
+        store["total_pages"]  = 1
         store["total_chunks"] = chunk_count
-        store["dna"] = None
+        store["dna"]          = None
         store["doc_language"] = "English"
-        store["source_type"] = "youtube"
+        store["source_type"]  = "youtube"
         store["chat_history"] = []
 
-        return {
-            "success": True,
-            "video_id": video_id,
-            "duration": duration,
-            "total_chunks": chunk_count,
-            "source_type": "youtube"
-        }
+        return {"success": True, "video_id": video_id, "duration": duration, "total_chunks": chunk_count, "source_type": "youtube"}
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})
 
