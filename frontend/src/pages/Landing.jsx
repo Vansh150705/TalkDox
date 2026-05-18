@@ -75,9 +75,11 @@ export default function Landing() {
         .char-card { background:#fff;border:1.5px solid #e2e2e2;border-radius:24px;padding:40px 32px;text-align:center;transition:all 0.35s cubic-bezier(0.4,0,0.2,1); }
         .char-card:hover { transform:translateY(-8px);box-shadow:0 20px 60px rgba(0,0,0,0.1);border-color:#0a0a0a; }
 
-        .feat-card { background:#f8f8f8;border:1.5px solid #e2e2e2;border-radius:20px;padding:32px;transition:all 0.3s; }
-        .feat-card:hover { transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.08);border-color:#a0a0a0; }
-        .feat-card.dark { background:#0a0a0a;border-color:#0a0a0a; }
+        .feat-card { background:#f8f8f8;border:1.5px solid #e2e2e2;border-radius:20px;padding:32px;transition:all 0.3s;cursor:default; }
+        .feat-card:hover { transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.15);background:#0a0a0a;border-color:#0a0a0a; }
+        .feat-card:hover .feat-title { color:#ffffff !important; }
+        .feat-card:hover .feat-desc { color:rgba(255,255,255,0.5) !important; }
+        .feat-card:hover .feat-icon-wrap { background:rgba(255,255,255,0.08) !important;border-color:rgba(255,255,255,0.1) !important; }
 
         .step:hover .step-num { background:#0a0a0a;color:#fff;border-color:#0a0a0a;transform:scale(1.1); }
 
@@ -335,19 +337,37 @@ export default function Landing() {
           </div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:20}}>
             {[
-              {icon:'💬',title:'Smart Q&A',desc:'Ask anything. Get precise answers grounded in your actual content. 3 Agentic AI layers ensure accuracy.',dark:false},
-              {icon:'🧬',title:'Document DNA',desc:'Auto-generated fingerprint on upload — domain, tone, complexity, key themes, and an unusual insight.',dark:true},
-              {icon:'🔀',title:'Doc vs Doc',desc:'Upload two sources and compare them side by side. Dual vector retrieval. Colour-coded source attribution.',dark:false},
-              {icon:'🕐',title:'Timeline Extractor',desc:'One click extracts every date, deadline, and milestone into a colour-coded visual timeline.',dark:false},
-              {icon:'🃏',title:'Smart Flashcards',desc:'Generate study flashcards from any PDF, website, or YouTube video. Filter by difficulty level.',dark:false},
-              {icon:'🛠',title:'5 Automation Tools',desc:'Summary, Quiz, Email, Contradiction Finder, Action Items. One click each. Instant output.',dark:true},
+              {icon:'💬',title:'Smart Q&A',desc:'Ask anything. Get precise answers grounded in your actual content. 3 Agentic AI layers ensure accuracy.'},
+              {icon:'🧬',title:'Document DNA',desc:'Auto-generated fingerprint on upload — domain, tone, complexity, key themes, and an unusual insight.'},
+              {icon:'🔀',title:'Doc vs Doc',desc:'Upload two sources and compare them side by side. Dual vector retrieval. Colour-coded source attribution.'},
+              {icon:'🕐',title:'Timeline Extractor',desc:'One click extracts every date, deadline, and milestone into a colour-coded visual timeline.'},
+              {icon:'🃏',title:'Smart Flashcards',desc:'Generate study flashcards from any PDF, website, or YouTube video. Filter by difficulty level.'},
+              {icon:'🛠',title:'5 Automation Tools',desc:'Summary, Quiz, Email, Contradiction Finder, Action Items. One click each. Instant output.'},
             ].map((f,i)=>(
-              <div key={f.title} className={`feat-card reveal reveal-delay-${(i%3)+1} ${f.dark?'dark':''}`}>
-                <div style={{width:48,height:48,borderRadius:14,background:f.dark?'rgba(255,255,255,0.08)':'#fff',border:`1px solid ${f.dark?'rgba(255,255,255,0.1)':'#e2e2e2'}`,display:'flex',alignItems:'center',justifyContent:'center',fontSize:22,marginBottom:20,boxShadow:'0 2px 8px rgba(0,0,0,0.06)'}}>{f.icon}</div>
-                <h3 style={{fontSize:20,fontWeight:700,letterSpacing:'-0.02em',marginBottom:10,color:f.dark?'#fff':'#0a0a0a'}}>{f.title}</h3>
-                <p style={{fontSize:14,color:f.dark?'rgba(255,255,255,0.5)':'#5a5a5a',lineHeight:1.65}}>{f.desc}</p>
-              </div>
-            ))}
+             <div key={f.title}
+    className={`feat-card reveal reveal-delay-${(i%3)+1}`}
+    onMouseEnter={e => {
+      e.currentTarget.style.background = '#0a0a0a'
+      e.currentTarget.style.borderColor = '#0a0a0a'
+      e.currentTarget.querySelector('.feat-icon-wrap').style.background = 'rgba(255,255,255,0.08)'
+      e.currentTarget.querySelector('.feat-icon-wrap').style.borderColor = 'rgba(255,255,255,0.1)'
+      e.currentTarget.querySelector('.feat-title').style.color = '#ffffff'
+      e.currentTarget.querySelector('.feat-desc').style.color = 'rgba(255,255,255,0.5)'
+    }}
+    onMouseLeave={e => {
+      e.currentTarget.style.background = '#f8f8f8'
+      e.currentTarget.style.borderColor = '#e2e2e2'
+      e.currentTarget.querySelector('.feat-icon-wrap').style.background = '#fff'
+      e.currentTarget.querySelector('.feat-icon-wrap').style.borderColor = '#e2e2e2'
+      e.currentTarget.querySelector('.feat-title').style.color = '#0a0a0a'
+      e.currentTarget.querySelector('.feat-desc').style.color = '#5a5a5a'
+    }}
+  >
+    <div className="feat-icon-wrap" style={{width:48,height:48,borderRadius:14,background:'#fff',border:'1px solid #e2e2e2',display:'flex',alignItems:'center',justifyContent:'center',fontSize:22,marginBottom:20,boxShadow:'0 2px 8px rgba(0,0,0,0.06)',transition:'all 0.3s'}}>{f.icon}</div>
+    <h3 className="feat-title" style={{fontSize:20,fontWeight:700,letterSpacing:'-0.02em',marginBottom:10,color:'#0a0a0a',transition:'color 0.3s'}}>{f.title}</h3>
+    <p className="feat-desc" style={{fontSize:14,color:'#5a5a5a',lineHeight:1.65,transition:'color 0.3s'}}>{f.desc}</p>
+  </div>
+))}
           </div>
         </div>
       </section>
