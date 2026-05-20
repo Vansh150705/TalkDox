@@ -140,7 +140,15 @@ export default function Landing() {
         .feat-card:hover .feat-desc { color:rgba(255,255,255,0.5) !important; }
         .feat-card:hover .feat-icon-wrap { background:rgba(255,255,255,0.08) !important;border-color:rgba(255,255,255,0.1) !important; }
 
-        .step:hover .step-num { background:#0a0a0a;color:#fff;border-color:#0a0a0a;transform:scale(1.1); }
+.step .step-num { transition: all 0.35s cubic-bezier(0.4,0,0.2,1); }
+.step:hover .step-num {
+  background: #0a0a0a !important;
+  color: #ffffff !important;
+  border-color: #0a0a0a !important;
+  transform: scale(1.15) translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.25);
+}
+.step:hover .step-title { color: #0a0a0a; }
 
         .nav-inner { background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);border:1px solid #e2e2e2;border-radius:100px;padding:14px 28px;box-shadow:0 4px 24px rgba(0,0,0,0.08); }
         .browser-frame { animation: float 6s ease-in-out infinite; }
