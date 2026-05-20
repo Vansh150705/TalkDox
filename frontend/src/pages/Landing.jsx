@@ -206,122 +206,48 @@ export default function Landing() {
          section { width: 100%; overflow: hidden; }
 
 /* ── RESPONSIVE BREAKPOINTS ── */
-@media (max-width: 1024px) {
-  nav { padding: 0 20px !important; }
-  .nav-inner { padding: 12px 20px !important; }
-  .nav-links { gap: 20px !important; }
-  .nav-links a { font-size: 13px !important; }
-}
-
 @media (max-width: 900px) {
-  /* Tablet & below */
   section { padding: 60px 20px !important; }
 
-  /* Hero stacks */
-  section > div[style*="grid-template-columns: 1fr 1fr"] {
+  section[style*="minHeight"] > div[style*="grid-template-columns"] {
     grid-template-columns: 1fr !important;
     gap: 40px !important;
     text-align: center;
   }
 
-  /* Hero heading */
   h1 { font-size: 44px !important; }
-
-  /* Section headings */
   h2 { font-size: 38px !important; }
 
-  /* Browser mockup hidden on mobile */
-  .browser-frame, .conf-badge, .source-badge { display: none !important; }
-  section > div[style*="grid-template-columns: 1fr 1fr"] > div:last-child { display: none !important; }
+  section[style*="minHeight"] .browser-frame,
+  section[style*="minHeight"] .conf-badge,
+  section[style*="minHeight"] .source-badge {
+    display: none !important;
+  }
+  section[style*="minHeight"] > div > div:last-child {
+    display: none !important;
+  }
 
-  /* Character grid: 1 column */
-  section[id="sources"] div[style*="grid-template-columns: 1fr 1fr 1fr"] {
+  section[id="sources"] > div[style*="grid-template-columns"] {
     grid-template-columns: 1fr !important;
     max-width: 480px;
     margin: 0 auto !important;
   }
 
-  /* Features grid: 1 column */
-  section[id="features"] div[style*="grid-template-columns: repeat(3,1fr)"] {
+  section[id="features"] div[style*="grid-template-columns"] {
     grid-template-columns: 1fr !important;
   }
 
-  /* Stats grid: 2 cols */
   div[style*="grid-template-columns: repeat(4,1fr)"] {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 32px !important;
   }
 
-  /* HOW IT WORKS — Steps stack vertically */
   .steps-grid {
     grid-template-columns: 1fr !important;
     gap: 48px !important;
   }
   .step-line { display: none !important; }
   .step { padding: 0 !important; }
-}
-
-@media (max-width: 768px) {
-  nav { top: 16px !important; padding: 0 12px !important; }
-  .nav-inner { padding: 10px 16px !important; }
-  .nav-links { display: none !important; }
-  .nav-cta { padding: 8px 16px !important; font-size: 13px !important; }
-
-  /* Hero specifics */
-  section[style*="minHeight"] { padding: 100px 20px 60px !important; }
-  section[style*="minHeight"] > div { height: auto !important; }
-  h1 { font-size: 36px !important; line-height: 1.1 !important; }
-
-  /* Hero buttons stack */
-  section[style*="minHeight"] div[style*="display:'flex',gap:14"],
-  section[style*="minHeight"] div[style*="display: flex"][style*="gap:14"] {
-    flex-direction: column !important;
-    width: 100%;
-  }
-  section[style*="minHeight"] button {
-    width: 100% !important;
-    justify-content: center !important;
-  }
-  section[style*="minHeight"] a { width: 100% !important; }
-  section[style*="minHeight"] a button { width: 100% !important; }
-
-  /* Char cards */
-  .char-card { padding: 32px 24px !important; min-height: auto !important; }
-
-  /* Feature cards */
-  .feat-card { padding: 24px !important; }
-
-  /* CTA section */
-  section > div[style*="padding:'80px 60px'"],
-  section > div[style*="padding: '80px 60px'"] {
-    padding: 50px 24px !important;
-  }
-  .cta-feature-grid { grid-template-columns: 1fr !important; }
-
-  /* Footer */
-  footer { padding: 40px 20px 30px !important; }
-  footer > div > div:first-child {
-    grid-template-columns: 1fr !important;
-    gap: 32px !important;
-  }
-  footer > div > div:last-child {
-    flex-direction: column !important;
-    text-align: center;
-    gap: 8px !important;
-  }
-
-  /* Stats — single column on very small */
-  div[style*="grid-template-columns: repeat(4,1fr)"] {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-}
-
-@media (max-width: 480px) {
-  h1 { font-size: 30px !important; }
-  h2 { font-size: 28px !important; }
-  .nav-logo { font-size: 18px !important; }
-  .char-card { padding: 24px 16px !important; }
-  .feat-card { padding: 20px !important; }
 }
       `}</style>
 
