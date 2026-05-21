@@ -232,10 +232,10 @@ export default function Landing() {
     body > div:first-child { font-size: 11px !important; padding: 8px 14px !important; }
 
     /* HERO */
-    section[style*="minHeight"] {
-      padding: 60px 20px 40px !important;
-      min-height: auto !important;
-    }
+section[style*="minHeight"] {
+  padding: 130px 20px 40px !important;
+  min-height: auto !important;
+}
     section[style*="minHeight"] > div {
       grid-template-columns: 1fr !important;
       display: flex !important;
@@ -270,13 +270,43 @@ export default function Landing() {
     }
 
     /* HERO BUTTONS — stack */
-    section[style*="minHeight"] div[style*="gap:14"] {
-      display: flex !important;
-      flex-direction: column !important;
-      width: 100% !important;
-      gap: 10px !important;
-      align-items: stretch !important;
-    }
+section[style*="minHeight"] div[style*="gap:14"] {
+  display: flex !important;
+  flex-direction: row !important;
+  width: 100% !important;
+  gap: 10px !important;
+  align-items: stretch !important;
+}
+section[style*="minHeight"] div[style*="gap:14"] > button,
+section[style*="minHeight"] div[style*="gap:14"] > a {
+  flex: 1 !important;
+  width: auto !important;
+  min-width: 0 !important;
+}
+section[style*="minHeight"] div[style*="gap:14"] > button {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 14px 16px !important;
+  font-size: 13px !important;
+  white-space: nowrap !important;
+  height: 52px !important;
+}
+section[style*="minHeight"] div[style*="gap:14"] > a {
+  display: block !important;
+  text-decoration: none !important;
+  height: 52px !important;
+}
+section[style*="minHeight"] div[style*="gap:14"] > a > button {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 14px 16px !important;
+  font-size: 13px !important;
+  white-space: nowrap !important;
+}
     section[style*="minHeight"] div[style*="gap:14"] > button {
       width: 100% !important;
       justify-content: center !important;
@@ -400,7 +430,7 @@ export default function Landing() {
             </div>
            <h1 style={{
   fontFamily:'Syne,sans-serif',
-  fontSize:'clamp(22px, 6vw, 60px)',
+fontSize:'clamp(36px, 9vw, 60px)',
   fontWeight:800,
   lineHeight:1.1,
   letterSpacing:'-0.04em',
