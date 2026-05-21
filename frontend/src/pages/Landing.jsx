@@ -222,7 +222,7 @@ export default function Landing() {
     section[style*="minHeight"] > div > div:last-child { display: none !important; }
 
     /* NAV */
-    nav { top: 16px !important; padding: 0 12px !important; }
+    nav { top: 50px !important; padding: 0 12px !important; }
     .nav-inner { padding: 8px 14px !important; }
     .nav-links { display: none !important; }
     .nav-logo { font-size: 15px !important; }
@@ -233,7 +233,7 @@ export default function Landing() {
 
     /* HERO */
     section[style*="minHeight"] {
-      padding: 100px 20px 40px !important;
+      padding: 60px 20px 40px !important;
       min-height: auto !important;
     }
     section[style*="minHeight"] > div {
