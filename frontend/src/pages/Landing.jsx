@@ -45,7 +45,7 @@ export default function Landing() {
 
   return (
     <>
-     <style>{`
+   <style>{`
   /* ── GLOBAL OVERFLOW PREVENTION ── */
   * { box-sizing: border-box; }
   html, body, #root {
