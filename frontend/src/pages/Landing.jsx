@@ -208,17 +208,28 @@ html, body {
 
 /* ── RESPONSIVE BREAKPOINTS ── */
 @media (max-width: 768px) {
-  /* NAV */
+  /* ── GLOBAL OVERFLOW FIX ── */
+  body, html, #root, main, section, div { max-width: 100vw !important; }
+
+  /* ── TYPEWRITER FIX (most critical) ── */
+  h1 span[style*="border-right"],
+  h1 span[style*="borderRight"] {
+    white-space: normal !important;
+    word-break: break-word !important;
+    display: inline !important;
+  }
+
+  /* ── NAV ── */
   nav { top: 16px !important; padding: 0 12px !important; }
   .nav-inner { padding: 8px 14px !important; }
   .nav-links { display: none !important; }
   .nav-logo { font-size: 15px !important; }
   .nav-cta { padding: 7px 12px !important; font-size: 11px !important; }
 
-  /* BANNER */
+  /* ── BANNER ── */
   body > div:first-child { font-size: 11px !important; padding: 8px 14px !important; }
 
-  /* HERO SECTION */
+  /* ── HERO SECTION ── */
   section[style*="minHeight"] {
     padding: 100px 20px 40px !important;
     min-height: auto !important;
@@ -229,58 +240,59 @@ html, body {
     max-width: 100% !important;
   }
 
+  /* Hide right column (browser mockup) */
   section[style*="minHeight"] > div > div:nth-child(2) {
     display: none !important;
   }
 
-  /* Hero left column */
+  /* Hero left column full width */
   section[style*="minHeight"] > div > div:first-child {
     width: 100% !important;
     max-width: 100% !important;
   }
 
-  /* HERO HEADING */
+  /* HERO H1 */
   section[style*="minHeight"] h1 {
-    font-size: 38px !important;
-    line-height: 1.05 !important;
+    font-size: 32px !important;
+    line-height: 1.1 !important;
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
+    max-width: 100% !important;
   }
 
-  /* Hero typewriter span — allow wrap */
-  section[style*="minHeight"] h1 span {
-    white-space: normal !important;
-  }
-
-  /* Hero paragraph */
+  /* HERO P */
   section[style*="minHeight"] p {
     font-size: 15px !important;
     line-height: 1.55 !important;
     max-width: 100% !important;
   }
 
-  /* HERO BUTTONS */
+  /* HERO BUTTONS — force stack */
   section[style*="minHeight"] div[style*="gap:14"],
   section[style*="minHeight"] div[style*="gap: 14"] {
-    flex-direction: column !important;
-    width: 100% !important;
-    gap: 10px !important;
-    margin-bottom: 28px !important;
-  }
-  section[style*="minHeight"] div[style*="gap:14"] > button,
-  section[style*="minHeight"] div[style*="gap:14"] > a {
+    display: block !important;
     width: 100% !important;
   }
-  section[style*="minHeight"] div[style*="gap:14"] button {
+  section[style*="minHeight"] div[style*="gap:14"] > button {
+    display: flex !important;
     width: 100% !important;
     justify-content: center !important;
+    margin-bottom: 10px !important;
     padding: 14px !important;
     font-size: 14px !important;
   }
-  section[style*="minHeight"] div[style*="gap:14"] a button {
+  section[style*="minHeight"] div[style*="gap:14"] > a {
+    display: block !important;
     width: 100% !important;
+    text-decoration: none !important;
+  }
+  section[style*="minHeight"] div[style*="gap:14"] > a > button {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
   }
 
+  /* Trusted by row */
   section[style*="minHeight"] div[style*="fontSize:13"] {
     font-size: 12px !important;
     flex-wrap: wrap !important;
@@ -353,10 +365,8 @@ html, body {
 }
 
 @media (max-width: 480px) {
-  section[style*="minHeight"] h1 {
-    font-size: 32px !important;
-  }
-  h2 { font-size: 28px !important; }
+  section[style*="minHeight"] h1 { font-size: 28px !important; }
+  h2 { font-size: 26px !important; }
   .nav-logo { font-size: 14px !important; }
   .nav-cta { font-size: 10px !important; padding: 6px 10px !important; }
   .char-card { padding: 24px 16px !important; }
