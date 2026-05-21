@@ -398,7 +398,16 @@ export default function Landing() {
               <span style={{width:6,height:6,background:'#22c55e',borderRadius:'50%',animation:'pulse 2s infinite',display:'block'}}/>
               Powered by Gemini 2.5 Flash
             </div>
-            <h1 style={{fontFamily:'Syne,sans-serif',fontSize:60,fontWeight:800,lineHeight:1.05,letterSpacing:'-0.04em',marginBottom:20}}>
+           <h1 style={{
+  fontFamily:'Syne,sans-serif',
+  fontSize:'clamp(22px, 6vw, 60px)',
+  fontWeight:800,
+  lineHeight:1.1,
+  letterSpacing:'-0.04em',
+  marginBottom:20,
+  wordBreak:'keep-all',
+  overflowWrap:'normal'
+}}>
               Chat with <em style={{fontStyle:'italic',fontWeight:300}}>any</em>
               <br/>
               <span ref={typewriterRef} style={{borderRight:'3px solid #0a0a0a',paddingRight:4,animation:'blink 1s step-end infinite',whiteSpace:'nowrap'}}>PDF</span>
