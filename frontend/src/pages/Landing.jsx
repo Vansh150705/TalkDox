@@ -221,14 +221,11 @@ export default function Landing() {
       overflow-x: hidden !important;
     }
 
-    /* TYPEWRITER — most critical fix */
-    h1 span {
-      white-space: normal !important;
-      word-break: break-word !important;
-      overflow-wrap: break-word !important;
-      display: inline !important;
-      max-width: 100% !important;
-    }
+/* TYPEWRITER */
+h1 span {
+  white-space: nowrap !important;
+  display: inline-block !important;
+}
 
     /* NAV */
     nav { top: 16px !important; padding: 0 12px !important; }
@@ -250,25 +247,24 @@ export default function Landing() {
       width: 100% !important;
       max-width: 100% !important;
     }
-    section[style*="minHeight"] > div > div:nth-child(2) {
-      display: none !important;
-    }
+section[style*="minHeight"] > div > div:nth-child(2),
+section[style*="minHeight"] .browser-frame,
+section[style*="minHeight"] .conf-badge,
+section[style*="minHeight"] .source-badge {
+  display: none !important;
+}
     section[style*="minHeight"] > div > div:first-child {
       width: 100% !important;
       max-width: 100% !important;
     }
 
-    /* HERO H1 */
-    section[style*="minHeight"] h1 {
-      font-size: 28px !important;
-      line-height: 1.1 !important;
-      word-wrap: break-word !important;
-      overflow-wrap: break-word !important;
-      word-break: break-word !important;
-      hyphens: auto !important;
-      max-width: 100% !important;
-      width: 100% !important;
-    }
+/* HERO H1 */
+section[style*="minHeight"] h1 {
+  font-size: 36px !important;
+  line-height: 1.15 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
 
     /* HERO P */
     section[style*="minHeight"] p {
