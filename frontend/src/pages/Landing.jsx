@@ -340,11 +340,17 @@ section[style*="minHeight"] div[style*="gap:14"] > a > button {
     section[id="sources"] > p { font-size: 14px !important; }
     .char-card { padding: 32px 24px !important; min-height: auto !important; }
 
-    /* STATS */
-    div[style*="grid-template-columns: repeat(4,1fr)"] {
-      grid-template-columns: repeat(2, 1fr) !important;
-      gap: 32px !important;
-    }
+/* STATS BAR */
+div[style*="background:'#0a0a0a'"] > div {
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 32px !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+div[style*="background:'#0a0a0a'"] > div > div {
+  width: 100% !important;
+  min-width: 0 !important;
+}
 
     /* FEATURES */
     section[id="features"] { padding: 60px 20px !important; }
