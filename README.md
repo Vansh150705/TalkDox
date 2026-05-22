@@ -98,9 +98,9 @@ TalkDox/
 **Vansh Mahajan** — B.Tech CS, SRMSIT (2023–2027)
 
 - 🌐 Website: https://vansh-portfolio-mauve.vercel.app/
-- 💼 LinkedIn: [vansh-mahajan-napv](https://www.linkedin.com/in/vansh-mahajan-napv/)
+- 💼 LinkedIn: https://www.linkedin.com/in/vansh-mahajan-napv/
 - 📧 Email: vansh150705@gmail.com
-- 🐙 GitHub: [@Vansh150705](https://github.com/Vansh150705)
+- 🐙 GitHub: https://github.com/Vansh150705
 
 ---
 
