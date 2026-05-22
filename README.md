@@ -4,14 +4,13 @@
 > Agentic RAG with 12+ AI features in one unified intelligence layer.
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-talkdox--ai.vercel.app-black?style=for-the-badge)](https://talkdox-ai.vercel.app)
-[![GitHub stars](https://img.shields.io/github/stars/Vansh150705/TalkDox?style=for-the-badge)](https://github.com/Vansh150705/TalkDox/stargazers)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
 ---
 
 ## 🎯 What is TalkDox?
 
-TalkDox transforms any document, webpage, or video into an intelligent conversation partner. Upload a PDF, paste a URL, or drop a YouTube link — TalkDox reads, understands, and lets you have a full AI conversation with it.
+TalkDox transforms any document, webpage, or video into an intelligent conversation partner. Upload a PDF, paste a URL, or drop a YouTube link - TalkDox reads, understands, and lets you have a full AI conversation with it.
 
 Unlike basic chatbots, TalkDox uses a **3-layer Agentic RAG pipeline** with self-reflection and confidence scoring, plus 12+ built-in AI tools.
 
@@ -20,9 +19,9 @@ Unlike basic chatbots, TalkDox uses a **3-layer Agentic RAG pipeline** with self
 ## ✨ Features
 
 ### 📂 3 Source Types
-- **📄 PDF Reader** — Research papers, contracts, textbooks, reports
-- **🌐 Web Surfer** — Any website URL, full-page scraping
-- **▶️ YouTube Extractor** — Auto-transcribes any video
+- **📄 PDF Reader** - Research papers, contracts, textbooks, reports
+- **🌐 Web Surfer** - Any website URL, full-page scraping
+- **▶️ YouTube Extractor** - Auto-transcribes any video
 
 ### 🤖 12 AI Capabilities
 
@@ -49,10 +48,10 @@ Unlike basic chatbots, TalkDox uses a **3-layer Agentic RAG pipeline** with self
 Query → Clarification Layer → Retrieval (FAISS) → Self-Reflection → Confidence Score → Response
 ```
 
-1. **Clarification** — Detects ambiguous queries and asks for specifics
-2. **Retrieval** — Embeds + searches FAISS for top-k relevant chunks
-3. **Self-Reflection** — Critiques its own answer and refines if needed
-4. **Confidence** — Outputs final answer with 0–100% confidence score
+1. **Clarification** - Detects ambiguous queries and asks for specifics
+2. **Retrieval** - Embeds + searches FAISS for top-k relevant chunks
+3. **Self-Reflection** - Critiques its own answer and refines if needed
+4. **Confidence** - Outputs final answer with 0–100% confidence score
 
 ---
 
@@ -95,7 +94,7 @@ TalkDox/
 
 ## 👨‍💻 Author
 
-**Vansh Mahajan** — B.Tech CS, SRMSIT (2023–2027)
+**Vansh Mahajan**
 
 - 🌐 Website: https://vansh-portfolio-mauve.vercel.app/
 - 💼 LinkedIn: https://www.linkedin.com/in/vansh-mahajan-napv/
@@ -106,7 +105,7 @@ TalkDox/
 
 ## 📄 License
 
-MIT License — free to use, modify, and share.
+MIT License - free to use, modify, and share.
 
 ---
 
