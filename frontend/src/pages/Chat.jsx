@@ -85,7 +85,7 @@ const sendMessage = async (q) => {
       setMessages(prev => prev.map(msg => 
         msg.id === messageId ? { ...msg, content: currentText } : msg
       ))
-      await new Promise(resolve => setTimeout(resolve, 30))
+      await new Promise(resolve => setTimeout(resolve, 50))
     }
     
     setMessages(prev => prev.map(msg => 
