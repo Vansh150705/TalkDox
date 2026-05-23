@@ -135,15 +135,65 @@ async def generate_dna_background(full_text):
 @app.post("/api/upload/web")
 async def upload_web(url: str = Form(...)):
     try:
+        import random
+        
+        user_agents = [
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:120.0) Gecko/20100101 Firefox/120.0",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:120.0) Gecko/20100101 Firefox/120.0",
+            "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        ]
+        
         headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-            "Accept-Language": "en-US,en;q=0.5",
-            "Accept-Encoding": "gzip, deflate",
+            "User-Agent": random.choice(user_agents),
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.9,en-IN;q=0.8",
+            "Accept-Encoding": "gzip, deflate, br",
+            "DNT": "1",
             "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "none",
+            "Sec-Fetch-User": "?1",
+            "Cache-Control": "max-age=0",
         }
-        resp = requests.get(url, headers=headers, timeout=12)
-        resp.raise_for_status()
+        
+        try:
+            resp = requests.get(url, headers=headers, timeout=15, allow_redirects=True)
+            resp.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            status = e.response.status_code
+            if status == 403:
+                return JSONResponse(status_code=400, content={
+                    "error": "This website blocks automated access. Try blogs, Wikipedia, documentation sites, or paste content into a PDF instead."
+                })
+            elif status == 404:
+                return JSONResponse(status_code=400, content={
+                    "error": "Page not found. Please check the URL and try again."
+                })
+            elif status == 429:
+                return JSONResponse(status_code=400, content={
+                    "error": "Too many requests. Please wait a moment and try again."
+                })
+            elif status == 401:
+                return JSONResponse(status_code=400, content={
+                    "error": "This page requires login and can't be accessed publicly."
+                })
+            else:
+                return JSONResponse(status_code=400, content={
+                    "error": f"Couldn't fetch this page (error {status}). The site may be blocking access."
+                })
+        except requests.exceptions.Timeout:
+            return JSONResponse(status_code=400, content={
+                "error": "Request timed out. The website is too slow or unreachable."
+            })
+        except requests.exceptions.ConnectionError:
+            return JSONResponse(status_code=400, content={
+                "error": "Couldn't connect to this website. Please check the URL."
+            })
+        
         soup = BeautifulSoup(resp.text, "html.parser")
         for tag in soup(["script","style","nav","footer","header","aside","form","iframe","noscript"]):
             tag.decompose()
@@ -155,7 +205,9 @@ async def upload_web(url: str = Form(...)):
                 texts.append(t)
         full_text = "\n\n".join(texts)
         if len(full_text.strip()) < 200:
-            return JSONResponse(status_code=400, content={"error": "Not enough text extracted. This site may block scrapers."})
+            return JSONResponse(status_code=400, content={
+                "error": "Not enough readable content on this page. The site may use JavaScript rendering or block scrapers."
+            })
 
         vs, chunk_count = index_text(full_text, title)
         store["vectorstore"]  = vs
@@ -170,7 +222,9 @@ async def upload_web(url: str = Form(...)):
 
         return {"success": True, "title": title, "total_chunks": chunk_count, "source_type": "web"}
     except Exception as e:
-        return JSONResponse(status_code=500, content={"error": str(e)})
+        return JSONResponse(status_code=500, content={
+            "error": "Something went wrong while fetching this page. Please try a different URL."
+        })
 
 
 @app.post("/api/upload/youtube")

@@ -640,22 +640,38 @@ export default function Upload() {
                 </div>
               )}
 
-              {activeTab === 'web' && !loading && (
-                <div>
-                  <div className="section-title">Paste Website URL</div>
-                  <div className="section-sub">Any article, blog, documentation, or page on the web.</div>
-                  <input
-                    className="url-input"
-                    value={url}
-                    onChange={e => setUrl(e.target.value)}
-                    onKeyDown={e => { if (e.key === 'Enter' && url) handleWeb() }}
-                    placeholder="https://example.com/article"
-                  />
-                  <button className="submit-btn" onClick={handleWeb} disabled={!url}>
-                    🌐 Scrape & Index Page
-                  </button>
-                </div>
-              )}
+{activeTab === 'web' && !loading && (
+  <div>
+    <div className="section-title">Paste Website URL</div>
+    <div className="section-sub">Any article, blog, documentation, or page on the web.</div>
+    <div style={{
+      background:'#fffbea',
+      border:'1px solid #fde68a',
+      borderRadius:10,
+      padding:'10px 14px',
+      fontSize:12,
+      color:'#92400e',
+      lineHeight:1.55,
+      marginBottom:14,
+      display:'flex',
+      alignItems:'flex-start',
+      gap:8
+    }}>
+      <span style={{fontSize:14,flexShrink:0}}>💡</span>
+      <span><strong>Tip:</strong> Some news sites and paywalled content may block automated access. Works best with blogs, Wikipedia, documentation, and public articles.</span>
+    </div>
+    <input
+      className="url-input"
+      value={url}
+      onChange={e => setUrl(e.target.value)}
+      onKeyDown={e => { if (e.key === 'Enter' && url) handleWeb() }}
+      placeholder="https://example.com/article"
+    />
+    <button className="submit-btn" onClick={handleWeb} disabled={!url}>
+      🌐 Scrape & Index Page
+    </button>
+  </div>
+)}
 
 {activeTab === 'youtube' && !loading && (
   <div>
