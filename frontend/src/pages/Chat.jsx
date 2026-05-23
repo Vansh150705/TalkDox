@@ -857,10 +857,29 @@ recognition.onresult = (event) => {
   }
   .sidebar.open { transform: translateX(0); }
 
-  .top-bar { padding: 12px 16px; gap: 8px; flex-wrap: wrap; }
-  .top-title { font-size: 16px; }
-  .top-title em { display: none; }
-  .top-select { padding: 6px 10px; font-size: 11px; }
+.top-bar { 
+    padding: 10px 12px !important; 
+    gap: 6px !important; 
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .top-bar::-webkit-scrollbar { display: none; }
+  .top-title { 
+    font-size: 14px !important; 
+    flex: 1; 
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .top-title em { display: none !important; }
+  .top-select { 
+    padding: 5px 10px !important; 
+    font-size: 11px !important;
+    flex-shrink: 0;
+  }
+  .mobile-menu-btn { flex-shrink: 0 !important; }
 
   .content-area { padding: 16px; }
 
