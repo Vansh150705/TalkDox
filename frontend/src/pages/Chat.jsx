@@ -51,21 +51,53 @@ export default function Chat() {
     }
   }, [activeTab])
 
-  const sendMessage = async (q) => {
-    const question = q || input.trim()
-    if (!question) return
-    setInput('')
-    setMessages(prev => [...prev, {role:'user', content:question}])
-    setLoading(true)
-    try {
-      const fd = new FormData()
-      fd.append('question', question); fd.append('mode', mode); fd.append('persona', persona)
-      const r = await axios.post(`${API}/api/chat`, fd)
-      setMessages(prev => [...prev, {role:'assistant', content:r.data.answer, sources:r.data.sources, confidence:r.data.confidence}])
-    } catch(e) {
-      setMessages(prev => [...prev, {role:'assistant', content:'❌ Error: ' + (e.response?.data?.error || 'Something went wrong')}])
-    } finally { setLoading(false) }
+const sendMessage = async (q) => {
+  const question = q || input.trim()
+  if (!question) return
+  setInput('')
+  setMessages(prev => [...prev, {role:'user', content:question}])
+  setLoading(true)
+  try {
+    const fd = new FormData()
+    fd.append('question', question); fd.append('mode', mode); fd.append('persona', persona)
+    const r = await axios.post(`${API}/api/chat`, fd)
+    
+    const fullAnswer = r.data.answer
+    const sources = r.data.sources
+    const confidence = r.data.confidence
+    
+    const messageId = Date.now()
+    setLoading(false)
+    setMessages(prev => [...prev, {
+      id: messageId,
+      role: 'assistant',
+      content: '',
+      sources: null,
+      confidence: null,
+      isStreaming: true
+    }])
+    
+    const words = fullAnswer.split(' ')
+    let currentText = ''
+    
+    for (let i = 0; i < words.length; i++) {
+      currentText += (i === 0 ? '' : ' ') + words[i]
+      setMessages(prev => prev.map(msg => 
+        msg.id === messageId ? { ...msg, content: currentText } : msg
+      ))
+      await new Promise(resolve => setTimeout(resolve, 30))
+    }
+    
+    setMessages(prev => prev.map(msg => 
+      msg.id === messageId 
+        ? { ...msg, sources, confidence, isStreaming: false }
+        : msg
+    ))
+  } catch(e) {
+    setMessages(prev => [...prev, {role:'assistant', content:'❌ Error: ' + (e.response?.data?.error || 'Something went wrong')}])
+    setLoading(false)
   }
+}
 
   const toggleVoice = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
@@ -411,6 +443,19 @@ recognition.onresult = (event) => {
           animation: msgIn 0.3s ease;
         }
         @keyframes msgIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+@keyframes blink-cursor {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}
+.streaming-cursor {
+  display: inline-block;
+  animation: blink-cursor 0.8s infinite;
+  color: #0a0a0a;
+  font-weight: bold;
+  margin-left: 2px;
+}
+
         .msg-bubble.user {
           background: #0a0a0a;
           color: #fff;
@@ -964,11 +1009,14 @@ recognition.onresult = (event) => {
                       </div>
                     </div>
                   )}
-                  {messages.map((msg,i) => (
-                    <div key={i}>
-                      <div className={`msg-wrap ${msg.role}`}>
-                        <div className={`msg-bubble ${msg.role}`}>{msg.content}</div>
-                      </div>
+{messages.map((msg,i) => (
+  <div key={i}>
+    <div className={`msg-wrap ${msg.role}`}>
+      <div className={`msg-bubble ${msg.role}`}>
+        {msg.content}
+        {msg.isStreaming && <span className="streaming-cursor">▌</span>}
+      </div>
+    </div>
                       {msg.role==='assistant' && msg.confidence != null && (
                         <div className="msg-meta">
                           <div className="conf-row">
