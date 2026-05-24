@@ -330,15 +330,27 @@ if (!state) return (
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'DM Sans', sans-serif; background: #fff; overflow: hidden; }
+        body { 
+  font-family: 'DM Sans', sans-serif; 
+  background: #fff; 
+  overflow: hidden;
+}
 
-        .chat-shell {
-          display: grid;
-          grid-template-columns: 280px 1fr;
-          height: 100vh;
-          background: #fff;
-          position: relative;
-        }
+html {
+  height: 100%;
+  height: 100dvh;
+}
+
+.chat-shell {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  height: 100vh;
+  height: 100dvh;
+  background: #fff;
+  position: relative;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
         .chat-bg {
           position: fixed; inset: 0;
           background-image: radial-gradient(circle, #e8e8e8 1px, transparent 1px);
