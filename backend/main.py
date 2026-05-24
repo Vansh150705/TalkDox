@@ -70,14 +70,29 @@ async def upload_pdf(files: list[UploadFile] = File(...)):
         from pypdf import PdfReader
         from langchain_text_splitters import RecursiveCharacterTextSplitter
 
+        MAX_FILE_SIZE = 20 * 1024 * 1024  # 20 MB
+        MAX_PAGES = 300
+
         all_chunks, meta = [], []
         total_pages = 0
         full_text = ""
 
         for f in files:
             content = await f.read()
+            
+            if len(content) > MAX_FILE_SIZE:
+                return JSONResponse(status_code=400, content={
+                    "error": "PDF is too large. Maximum file size is 20 MB."
+                })
+            
             pdf_bytes = io.BytesIO(content)
             pdf = PdfReader(pdf_bytes)
+            
+            if len(pdf.pages) > MAX_PAGES:
+                return JSONResponse(status_code=400, content={
+                    "error": f"PDF has {len(pdf.pages)} pages. Maximum is {MAX_PAGES} pages."
+                })
+            
             total_pages += len(pdf.pages)
 
             for i, page in enumerate(pdf.pages):

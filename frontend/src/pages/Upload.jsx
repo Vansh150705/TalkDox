@@ -629,7 +629,7 @@ export default function Upload() {
                     <input type="file" accept=".pdf" multiple style={{ display: 'none' }} onChange={e => setFiles([...e.target.files])} />
                     <span className="drop-emoji">📄</span>
                     <div className="drop-main">Click to upload or drag & drop</div>
-                    <div className="drop-hint">PDF files only</div>
+                    <div className="drop-hint">PDF files only • Max 20 MB / 300 pages</div>
                   </label>
                   {[...files].map(f => (
                     <div key={f.name} className="file-badge">✅ {f.name}</div>
