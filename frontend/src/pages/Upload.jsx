@@ -168,7 +168,7 @@ const handleDrop = (e) => {
   const charName = activeTab === 'pdf' ? 'Paige' : activeTab === 'web' ? 'Webb' : 'Yuki'
   const charRole = activeTab === 'pdf' ? 'the PDF Reader' : activeTab === 'web' ? 'the Web Surfer' : 'the Video Nerd'
   const charLine = activeTab === 'pdf'
-    ? 'Drop any PDF and I will read it cover to cover.'
+    ? 'Drop any Document and I will read it cover to cover.'
     : activeTab === 'web' ? 'Paste any URL and I will scrape it for you.'
     : 'Share a YouTube link and I will get the full transcript.'
 
