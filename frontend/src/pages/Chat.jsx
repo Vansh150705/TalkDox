@@ -4,6 +4,50 @@ import axios from 'axios'
 
 const API = import.meta.env.VITE_API_URL || ''
 
+function FlashcardItem({ card, ds, index }) {
+  const [flipped, setFlipped] = useState(false)
+  
+  return (
+    <div 
+      className={`flashcard ${flipped ? 'flipped' : ''}`} 
+      onClick={() => setFlipped(!flipped)}
+      style={{ animationDelay: `${index * 0.08}s` }}
+    >
+      <div className="flashcard-inner">
+        {/* FRONT — Question */}
+        <div className="flashcard-front" style={{background:ds.bg,borderColor:ds.border}}>
+          <div className="flashcard-header">
+            <span className="flashcard-diff" style={{color:ds.color,background:'#fff'}}>{ds.label}</span>
+            <span className="flashcard-topic">{card.topic}</span>
+          </div>
+          <div className="flashcard-content">
+            <div className="flashcard-label" style={{color:ds.color}}>Question</div>
+            <div className="flashcard-question">{card.question}</div>
+          </div>
+          <div className="flashcard-footer" style={{color:ds.color}}>
+            <span className="flashcard-tap-hint">↻ Tap to reveal answer</span>
+          </div>
+        </div>
+        
+        {/* BACK — Answer */}
+        <div className="flashcard-back">
+          <div className="flashcard-header">
+            <span className="flashcard-diff" style={{background:'rgba(255,255,255,0.15)',color:'#fff'}}>✓ Answer</span>
+            <span className="flashcard-topic" style={{color:'rgba(255,255,255,0.6)'}}>{card.topic}</span>
+          </div>
+          <div className="flashcard-content">
+            <div className="flashcard-label" style={{color:'rgba(255,255,255,0.6)'}}>Answer</div>
+            <div className="flashcard-answer">{card.answer}</div>
+          </div>
+          <div className="flashcard-footer" style={{color:'rgba(255,255,255,0.5)'}}>
+            <span className="flashcard-tap-hint">↻ Tap to see question</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function Chat() {
   const navigate = useNavigate()
   const [state, setState] = useState(null)
@@ -844,46 +888,161 @@ if (!state) return (
         }
         .tl-card { border-radius: 14px; padding: 14px 18px; }
 
-        /* ── FLASHCARDS ── */
-        .fc-card {
-          border-radius: 16px;
-          padding: 18px 22px;
-          margin-bottom: 6px;
-          border-width: 1.5px;
-          border-style: solid;
-        }
-        .fc-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 10px;
-        }
-        .fc-diff { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
-        .fc-topic { font-size: 11px; color: #a0a0a0; text-transform: uppercase; letter-spacing: 0.07em; font-weight: 500; }
-        .fc-question { font-size: 15px; font-weight: 600; color: #0a0a0a; line-height: 1.55; }
-        .fc-answer-wrap {
-          background: #fff;
-          border: 1px solid #e2e2e2;
-          border-radius: 14px;
-          overflow: hidden;
-          margin-bottom: 14px;
-        }
-        .fc-answer-wrap summary {
-          padding: 12px 18px;
-          cursor: pointer;
-          font-size: 13px;
-          font-weight: 500;
-          color: #5a5a5a;
-          list-style: none;
-        }
-        .fc-answer-wrap summary::-webkit-details-marker { display: none; }
-        .fc-answer-wrap summary:hover { color: #0a0a0a; }
-        .fc-answer-body {
-          background: #0a0a0a;
-          padding: 18px 22px;
-        }
-        .fc-answer-body .fa-label { font-size:10px; font-weight: 700; color:#5a5a5a; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
-        .fc-answer-body .fa-text { font-size: 14px; color: #f3f4f6; line-height: 1.7; }
+/* ── 3D FLASHCARDS ── */
+.flashcard {
+  perspective: 1500px;
+  margin-bottom: 18px;
+  cursor: pointer;
+  animation: flashcardIn 0.5s ease-out backwards;
+}
+@keyframes flashcardIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.flashcard-inner {
+  position: relative;
+  width: 100%;
+  min-height: 240px;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.flashcard.flipped .flashcard-inner {
+  transform: rotateY(180deg);
+}
+
+.flashcard-front,
+.flashcard-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  border-radius: 20px;
+  padding: 24px 28px;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  transition: box-shadow 0.3s;
+}
+
+.flashcard:hover .flashcard-front,
+.flashcard:hover .flashcard-back {
+  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+}
+
+.flashcard-front {
+  border-width: 2px;
+  border-style: solid;
+  background: #fff;
+}
+
+.flashcard-back {
+  background: linear-gradient(135deg, #0a0a0a 0%, #2a2a2a 100%);
+  border: 2px solid #0a0a0a;
+  color: #fff;
+  transform: rotateY(180deg);
+}
+
+.flashcard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.flashcard-diff {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 5px 12px;
+  border-radius: 100px;
+}
+
+.flashcard-topic {
+  font-size: 11px;
+  font-weight: 600;
+  color: #a0a0a0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.flashcard-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 12px 0;
+}
+
+.flashcard-label {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 12px;
+  opacity: 0.8;
+}
+
+.flashcard-question {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0a0a0a;
+  line-height: 1.45;
+  font-family: 'Syne', sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.flashcard-answer {
+  font-size: 15px;
+  font-weight: 400;
+  color: #f3f4f6;
+  line-height: 1.65;
+}
+
+.flashcard-footer {
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.flashcard-back .flashcard-footer {
+  border-top-color: rgba(255,255,255,0.1);
+}
+
+.flashcard-tap-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  animation: hintPulse 2s ease-in-out infinite;
+}
+
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .flashcard-inner,
+  .flashcard-front,
+  .flashcard-back {
+    min-height: 220px;
+  }
+  .flashcard-front,
+  .flashcard-back {
+    padding: 20px 22px;
+  }
+  .flashcard-question { font-size: 16px; }
+  .flashcard-answer { font-size: 14px; }
+}
 
         /* ── COMPARE ── */
         .cmp-tags {
@@ -1414,26 +1573,11 @@ if (!state) return (
                         <button onClick={()=>setFlashcards([])} style={{background:'#f8f8f8',border:'1px solid #e2e2e2',borderRadius:100,padding:'10px 18px',fontSize:13,cursor:'pointer',fontFamily:'DM Sans,sans-serif'}}>↺ Clear</button>
                       </div>
                       {flashcards.map((card,i)=>{
-                        const ds = diffStyles[card.difficulty]||diffStyles.medium
-                        return (
-                          <div key={i}>
-                            <div className="fc-card" style={{background:ds.bg,borderColor:ds.border}}>
-                              <div className="fc-header">
-                                <span className="fc-diff" style={{color:ds.color}}>{ds.label}</span>
-                                <span className="fc-topic">{card.topic}</span>
-                              </div>
-                              <div className="fc-question">{card.question}</div>
-                            </div>
-                            <details className="fc-answer-wrap">
-                              <summary>👁 Reveal Answer</summary>
-                              <div className="fc-answer-body">
-                                <div className="fa-label">Answer</div>
-                                <div className="fa-text">{card.answer}</div>
-                              </div>
-                            </details>
-                          </div>
-                        )
-                      })}
+  const ds = diffStyles[card.difficulty]||diffStyles.medium
+  return (
+    <FlashcardItem key={i} card={card} ds={ds} index={i} />
+  )
+})}
                     </div>
                   )}
                 </div>
