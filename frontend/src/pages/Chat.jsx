@@ -246,17 +246,17 @@ if (!state) return (
       <div style={{
         fontFamily:'Syne, sans-serif',
         fontWeight:800,
-        fontSize:32,
+        fontSize:42,
         color:'#0a0a0a',
-        marginBottom:40,
+        marginBottom:50,
         letterSpacing:'-0.02em'
       }}>
         TalkDox 🧠
       </div>
 
       <div style={{
-        fontSize:60,
-        marginBottom:24,
+        fontSize:80,
+        marginBottom:32,
         animation:'brainPulse 2s ease-in-out infinite'
       }}>
         🧠
@@ -264,49 +264,35 @@ if (!state) return (
 
       <div style={{
         fontFamily:'Syne, sans-serif',
-        fontSize:22,
+        fontSize:30,
         fontWeight:700,
         color:'#0a0a0a',
-        marginBottom:8,
+        marginBottom:14,
         letterSpacing:'-0.01em'
       }}>
         Waking up your AI...
       </div>
 
       <div style={{
-        fontSize:14,
+        fontSize:17,
         color:'#5a5a5a',
-        maxWidth:380,
-        lineHeight:1.6,
-        marginBottom:32
+        maxWidth:460,
+        lineHeight:1.65,
+        marginBottom:40
       }}>
         First load may take a moment as the AI initializes. Future loads will be instant.
       </div>
 
-      <div style={{display:'flex',gap:8,alignItems:'center'}}>
+      <div style={{display:'flex',gap:10,alignItems:'center'}}>
         <div className="ldot"/>
         <div className="ldot"/>
         <div className="ldot"/>
-      </div>
-
-      <div style={{
-        marginTop:48,
-        padding:'14px 22px',
-        background:'#f8f8f8',
-        border:'1px solid #e2e2e2',
-        borderRadius:100,
-        fontSize:13,
-        color:'#5a5a5a',
-        fontWeight:500,
-        maxWidth:420
-      }}>
-        💡 <strong>Did you know?</strong> TalkDox uses 3 Agentic AI layers for accuracy.
       </div>
 
       <style>{`
         .ldot {
-          width: 10px;
-          height: 10px;
+          width: 12px;
+          height: 12px;
           background: #0a0a0a;
           border-radius: 50%;
           animation: lblink 1.4s ease-in-out infinite;
