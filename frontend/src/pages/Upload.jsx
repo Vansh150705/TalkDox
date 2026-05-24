@@ -26,12 +26,16 @@ export default function Upload() {
     setVideoId(extractVideoId(val) || '')
   }
 
-  const handleDrop = (e) => {
-    e.preventDefault()
-    setDragOver(false)
-    const dropped = [...e.dataTransfer.files].filter(f => f.type === 'application/pdf')
-    if (dropped.length) setFiles(dropped)
-  }
+const handleDrop = (e) => {
+  e.preventDefault()
+  setDragOver(false)
+  const allowedExtensions = ['.pdf', '.docx', '.txt', '.md']
+  const dropped = [...e.dataTransfer.files].filter(f => {
+    const name = f.name.toLowerCase()
+    return allowedExtensions.some(ext => name.endsWith(ext))
+  })
+  if (dropped.length) setFiles(dropped)
+}
 
   const pdfSteps = [
     { icon: '📖', label: 'Reading your PDF' },
@@ -169,7 +173,7 @@ export default function Upload() {
     : 'Share a YouTube link and I will get the full transcript.'
 
   const tabs = [
-    { id: 'pdf', icon: '📄', label: 'Paige', sub: 'PDF' },
+    { id: 'pdf', icon: '📄', label: 'Paige', sub: 'Docs' },
     { id: 'web', icon: '🌐', label: 'Webb', sub: 'Website' },
     { id: 'youtube', icon: '▶', label: 'Yuki', sub: 'YouTube' },
   ]
@@ -618,18 +622,18 @@ export default function Upload() {
 
               {activeTab === 'pdf' && !loading && (
                 <div>
-                  <div className="section-title">Upload PDF</div>
-                  <div className="section-sub">Drop one or more PDFs and start chatting in seconds.</div>
+<div className="section-title">Upload Document</div>
+<div className="section-sub">Drop one or more files: PDF, Word, TXT, or Markdown.</div>
                   <label
                     className={`drop-zone ${dragOver ? 'over' : ''}`}
                     onDragOver={e => { e.preventDefault(); setDragOver(true) }}
                     onDragLeave={() => setDragOver(false)}
                     onDrop={handleDrop}
                   >
-                    <input type="file" accept=".pdf" multiple style={{ display: 'none' }} onChange={e => setFiles([...e.target.files])} />
+                    <input type="file" accept=".pdf,.docx,.txt,.md" multiple style={{ display: 'none' }} onChange={e => setFiles([...e.target.files])} />
                     <span className="drop-emoji">📄</span>
                     <div className="drop-main">Click to upload or drag & drop</div>
-                    <div className="drop-hint">PDF files only • Max 20 MB / 300 pages</div>
+                    <div className="drop-hint">PDF, Word (.docx), Text (.txt), Markdown (.md) • Max 20 MB</div>
                   </label>
                   {[...files].map(f => (
                     <div key={f.name} className="file-badge">✅ {f.name}</div>

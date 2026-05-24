@@ -68,6 +68,7 @@ async def upload_pdf(files: list[UploadFile] = File(...)):
     try:
         import io
         from pypdf import PdfReader
+        from docx import Document
         from langchain_text_splitters import RecursiveCharacterTextSplitter
 
         MAX_FILE_SIZE = 20 * 1024 * 1024  # 20 MB
@@ -79,31 +80,69 @@ async def upload_pdf(files: list[UploadFile] = File(...)):
 
         for f in files:
             content = await f.read()
-            
+            filename = f.filename.lower()
+
             if len(content) > MAX_FILE_SIZE:
                 return JSONResponse(status_code=400, content={
-                    "error": "PDF is too large. Maximum file size is 20 MB."
+                    "error": "File is too large. Maximum size is 20 MB."
                 })
-            
-            pdf_bytes = io.BytesIO(content)
-            pdf = PdfReader(pdf_bytes)
-            
-            if len(pdf.pages) > MAX_PAGES:
-                return JSONResponse(status_code=400, content={
-                    "error": f"PDF has {len(pdf.pages)} pages. Maximum is {MAX_PAGES} pages."
-                })
-            
-            total_pages += len(pdf.pages)
 
-            for i, page in enumerate(pdf.pages):
-                text = page.extract_text() or ""
-                full_text += text + "\n"
-                if text.strip():
-                    splitter = RecursiveCharacterTextSplitter(chunk_size=600, chunk_overlap=80)
-                    chunks = splitter.split_text(text)
+            file_text = ""
+            page_count = 1
+            splitter = RecursiveCharacterTextSplitter(chunk_size=600, chunk_overlap=80)
+
+            # PDF
+            if filename.endswith('.pdf'):
+                pdf_bytes = io.BytesIO(content)
+                pdf = PdfReader(pdf_bytes)
+
+                if len(pdf.pages) > MAX_PAGES:
+                    return JSONResponse(status_code=400, content={
+                        "error": f"PDF has {len(pdf.pages)} pages. Maximum is {MAX_PAGES} pages."
+                    })
+
+                page_count = len(pdf.pages)
+                for i, page in enumerate(pdf.pages):
+                    text = page.extract_text() or ""
+                    file_text += text + "\n"
+                    if text.strip():
+                        chunks = splitter.split_text(text)
+                        for chunk in chunks:
+                            all_chunks.append(chunk)
+                            meta.append({"source": f.filename, "page": i + 1})
+
+            # DOCX (Word)
+            elif filename.endswith('.docx'):
+                doc_bytes = io.BytesIO(content)
+                doc = Document(doc_bytes)
+                file_text = "\n".join([p.text for p in doc.paragraphs if p.text.strip()])
+                if file_text.strip():
+                    chunks = splitter.split_text(file_text)
                     for chunk in chunks:
                         all_chunks.append(chunk)
-                        meta.append({"source": f.filename, "page": i + 1})
+                        meta.append({"source": f.filename, "page": 1})
+
+            # TXT or MD (plain text)
+            elif filename.endswith(('.txt', '.md')):
+                file_text = content.decode('utf-8', errors='ignore')
+                if file_text.strip():
+                    chunks = splitter.split_text(file_text)
+                    for chunk in chunks:
+                        all_chunks.append(chunk)
+                        meta.append({"source": f.filename, "page": 1})
+
+            else:
+                return JSONResponse(status_code=400, content={
+                    "error": f"Unsupported file type: {f.filename}. Please upload PDF, DOCX, TXT, or MD files."
+                })
+
+            full_text += file_text + "\n"
+            total_pages += page_count
+
+        if not all_chunks:
+            return JSONResponse(status_code=400, content={
+                "error": "Couldn't extract any text from the file. It may be empty or corrupted."
+            })
 
         embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
         vs = FAISS.from_texts(all_chunks, embeddings, metadatas=meta)

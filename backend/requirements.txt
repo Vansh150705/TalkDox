@@ -13,3 +13,4 @@ youtube-transcript-api
 beautifulsoup4
 requests
 yt-dlp
+python-docx==1.1.0
