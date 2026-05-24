@@ -1095,22 +1095,30 @@ if (!state) return (
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
+.top-bar { 
+    padding: 12px !important; 
+    gap: 8px !important; 
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    align-items: center !important;
+  }
   .top-bar::-webkit-scrollbar { display: none; }
   .top-title { 
-    font-size: 14px !important; 
+    font-size: 15px !important; 
     flex: 1; 
     min-width: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin: 0 !important;
   }
   .top-title em { display: none !important; }
   .top-select { 
-    padding: 5px 10px !important; 
+    padding: 6px 10px !important; 
     font-size: 11px !important;
     flex-shrink: 0;
   }
-  .mobile-menu-btn { flex-shrink: 0 !important; }
 
   .content-area { padding: 16px; }
 
@@ -1154,15 +1162,22 @@ if (!state) return (
   background: #fff;
   border: 1px solid #e2e2e2;
   border-radius: 10px;
-  width: 36px; height: 36px;
+  width: 38px;
+  height: 38px;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  font-size: 18px;
   cursor: pointer;
   flex-shrink: 0;
+  color: #0a0a0a;
 }
+
 @media (max-width: 768px) {
-  .mobile-menu-btn { display: flex; }
+  .mobile-menu-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
 }
 
 .sidebar-overlay {
