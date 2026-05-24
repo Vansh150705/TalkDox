@@ -185,13 +185,99 @@ recognition.onresult = (event) => {
     navigate('/upload')
   }
 
-  if (!state) return (
-    <div style={{display:'flex',alignItems:'center',justifyContent:'center',height:'100vh',fontFamily:'DM Sans,sans-serif',color:'#5a5a5a',background:'#fff'}}>
-      <div style={{display:'flex',gap:6,alignItems:'center'}}>
-        <div className="ldot"/><div className="ldot"/><div className="ldot"/>
-        <span style={{marginLeft:8}}>Loading your session...</span>
+if (!state) return (
+    <div style={{
+      display:'flex',
+      flexDirection:'column',
+      alignItems:'center',
+      justifyContent:'center',
+      height:'100vh',
+      fontFamily:'DM Sans,sans-serif',
+      background:'#ffffff',
+      backgroundImage:'radial-gradient(circle, #e0e0e0 1px, transparent 1px)',
+      backgroundSize:'28px 28px',
+      padding:'40px 20px',
+      textAlign:'center'
+    }}>
+      <div style={{
+        fontFamily:'Syne, sans-serif',
+        fontWeight:800,
+        fontSize:32,
+        color:'#0a0a0a',
+        marginBottom:40,
+        letterSpacing:'-0.02em'
+      }}>
+        TalkDox 🧠
       </div>
-      <style>{`.ldot{width:6px;height:6px;background:#0a0a0a;border-radius:50%;animation:lblink 1.2s ease-in-out infinite}.ldot:nth-child(2){animation-delay:0.2s}.ldot:nth-child(3){animation-delay:0.4s}@keyframes lblink{0%,80%,100%{opacity:0.3}40%{opacity:1}}`}</style>
+
+      <div style={{
+        fontSize:60,
+        marginBottom:24,
+        animation:'brainPulse 2s ease-in-out infinite'
+      }}>
+        🧠
+      </div>
+
+      <div style={{
+        fontFamily:'Syne, sans-serif',
+        fontSize:22,
+        fontWeight:700,
+        color:'#0a0a0a',
+        marginBottom:8,
+        letterSpacing:'-0.01em'
+      }}>
+        Waking up your AI...
+      </div>
+
+      <div style={{
+        fontSize:14,
+        color:'#5a5a5a',
+        maxWidth:380,
+        lineHeight:1.6,
+        marginBottom:32
+      }}>
+        First load may take a moment as the AI initializes. Future loads will be instant.
+      </div>
+
+      <div style={{display:'flex',gap:8,alignItems:'center'}}>
+        <div className="ldot"/>
+        <div className="ldot"/>
+        <div className="ldot"/>
+      </div>
+
+      <div style={{
+        marginTop:48,
+        padding:'14px 22px',
+        background:'#f8f8f8',
+        border:'1px solid #e2e2e2',
+        borderRadius:100,
+        fontSize:13,
+        color:'#5a5a5a',
+        fontWeight:500,
+        maxWidth:420
+      }}>
+        💡 <strong>Did you know?</strong> TalkDox uses 3 Agentic AI layers for accuracy.
+      </div>
+
+      <style>{`
+        .ldot {
+          width: 10px;
+          height: 10px;
+          background: #0a0a0a;
+          border-radius: 50%;
+          animation: lblink 1.4s ease-in-out infinite;
+        }
+        .ldot:nth-child(2) { animation-delay: 0.2s; }
+        .ldot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes lblink {
+          0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); }
+          40% { opacity: 1; transform: scale(1.1); }
+        }
+        @keyframes brainPulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.1); }
+        }
+      `}</style>
     </div>
   )
 
