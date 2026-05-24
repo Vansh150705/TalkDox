@@ -334,9 +334,9 @@ export default function Landing() {
               <span ref={typewriterRef} style={{borderRight:'3px solid #0a0a0a',paddingRight:4,animation:'blink 1s step-end infinite',whiteSpace:'nowrap'}}>PDF</span>
               <br/>instantly.
             </h1>
-            <p className="hero-p" style={{fontSize:18,fontWeight:400,color:'#5a5a5a',lineHeight:1.7,marginBottom:36,maxWidth:480}}>
-              Upload a PDF, paste a website URL, or drop a YouTube link. TalkDox reads it, understands it, and lets you have a full AI conversation with it.
-            </p>
+<p className="hero-p" style={{fontSize:18,fontWeight:400,color:'#5a5a5a',lineHeight:1.7,marginBottom:36,maxWidth:480}}>
+  Upload any document (PDF, Word, TXT, Markdown), paste a website URL, or drop a YouTube link. TalkDox reads it, understands it, and lets you have a full AI conversation with it.
+</p>
 
             <div className="hero-btns">
               <button className="hero-btn-primary" onClick={() => navigate('/upload')}>
@@ -414,9 +414,9 @@ export default function Landing() {
                 </div>
               </div>
             </div>
-            <div className="source-badge" style={{position:'absolute',bottom:60,left:-30,background:'#0a0a0a',color:'#fff',borderRadius:12,padding:'10px 14px',fontSize:11,fontWeight:600,zIndex:10,display:'flex',alignItems:'center',gap:6}}>
-              📄 PDF indexed · 847 chunks
-            </div>
+<div className="source-badge" style={{position:'absolute',bottom:60,left:-30,background:'#0a0a0a',color:'#fff',borderRadius:12,padding:'10px 14px',fontSize:11,fontWeight:600,zIndex:10,display:'flex',alignItems:'center',gap:6}}>
+  📄 Document indexed · 847 chunks
+</div>
           </div>
         </div>
       </section>
@@ -502,7 +502,7 @@ export default function Landing() {
               {icon:'🧬',title:'Document DNA',desc:'Auto-generated fingerprint on upload — domain, tone, complexity, key themes, and an unusual insight.'},
               {icon:'🔀',title:'Doc vs Doc',desc:'Upload two sources and compare them side by side. Dual vector retrieval. Colour-coded source attribution.'},
               {icon:'🕐',title:'Timeline Extractor',desc:'One click extracts every date, deadline, and milestone into a colour-coded visual timeline.'},
-              {icon:'🃏',title:'Smart Flashcards',desc:'Generate study flashcards from any PDF, website, or YouTube video. Filter by difficulty level.'},
+              {icon:'🃏',title:'Smart Flashcards',desc:'Generate study flashcards from any document, website, or YouTube video. Filter by difficulty level.'},
               {icon:'🛠',title:'5 Automation Tools',desc:'Summary, Quiz, Email, Contradiction Finder, Action Items. One click each. Instant output.'},
             ].map((f,i)=>(
              <div key={f.title} className={`feat-card reveal reveal-delay-${(i%3)+1}`}
@@ -542,7 +542,7 @@ export default function Landing() {
           <div className="steps-grid" style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:0,position:'relative'}}>
             <div className="step-line" style={{position:'absolute',top:56,left:'calc(100%/6)',right:'calc(100%/6)',height:'1.5px',background:'linear-gradient(to right, #e2e2e2, #0a0a0a, #e2e2e2)'}}/>
             {[
-              {num:'01',title:'Connect Your Source',desc:'Upload a PDF, paste a website URL, or drop a YouTube link. TalkDox handles all three instantly.'},
+              {num:'01',title:'Connect Your Source',desc:'Upload any document, paste a website URL, or drop a YouTube link. TalkDox handles all sources instantly.'},
               {num:'02',title:'AI Indexes & Understands',desc:'Content is chunked, embedded via Gemini, and indexed in FAISS. Your Agentic RAG pipeline is ready.'},
               {num:'03',title:'Start Chatting',desc:'Ask questions, extract timelines, generate flashcards, compare documents — all in one place.'},
             ].map((step,i)=>(
@@ -604,7 +604,7 @@ export default function Landing() {
           <div className="footer-grid" style={{display:'grid',gridTemplateColumns:'2fr 1fr 1fr',gap:40,marginBottom:48}}>
             <div>
               <div style={{fontFamily:'Syne,sans-serif',fontWeight:800,fontSize:22,marginBottom:12}}>TalkDox 🧠</div>
-              <p style={{fontSize:14,color:'#5a5a5a',lineHeight:1.6,maxWidth:300}}>Chat with any PDF, website, or YouTube video — powered by Google Gemini 2.5 Flash.</p>
+              <p style={{fontSize:14,color:'#5a5a5a',lineHeight:1.6,maxWidth:300}}>Chat with any document, website, or YouTube video — powered by Google Gemini 2.5 Flash.</p>
             </div>
 
             <div>
