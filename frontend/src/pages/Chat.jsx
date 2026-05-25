@@ -1116,14 +1116,8 @@ html {
     align-items: center !important;
   }
   .top-bar::-webkit-scrollbar { display: none; }
-  .top-title { 
-    font-size: 15px !important; 
-    flex: 1; 
-    min-width: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin: 0 !important;
+.top-title { 
+    display: none !important;
   }
   .top-title em { display: none !important; }
   .top-select { 
