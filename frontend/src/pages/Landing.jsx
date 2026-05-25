@@ -120,7 +120,7 @@ export default function Landing() {
         }
         .nav-cta:hover { background: #333; transform: translateY(-1px); }
 
-        .char-card { 
+.char-card { 
   background:#fff;
   border:1.5px solid #e2e2e2;
   border-radius:24px;
@@ -132,7 +132,10 @@ export default function Landing() {
   flex-direction: column;
 }
 .char-card button {
-  margin-top: auto !important;
+  margin-top: 24px !important;
+}
+.char-card p {
+  margin-bottom: auto;
 }
         .char-card:hover { transform:translateY(-8px);box-shadow:0 20px 60px rgba(0,0,0,0.1);border-color:#0a0a0a;border-width:2px; }
 
