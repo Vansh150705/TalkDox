@@ -442,7 +442,7 @@ export default function Landing() {
 
         <div className="chars-grid" style={{maxWidth:1200,margin:'0 auto',display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:32}}>
           {[
-            {tag:'📄 PDF', name:'Paige the PDF Reader', desc:'Upload PDFs, Word docs, text, or markdown files — research papers, reports, contracts, textbooks. Paige reads every word and answers your questions instantly.',
+            {tag:'📄 PDF', name:'Paige the PDF Reader', desc:'Upload PDFs, Word docs, text, or markdown files. Paige reads every word and answers your questions instantly.',
               svg: <svg viewBox="0 0 200 200" fill="none" style={{width:200,height:200,margin:'0 auto 28px'}}>
                 <circle cx="100" cy="85" r="38" fill="#fef3c7"/>
                 <ellipse cx="100" cy="52" rx="30" ry="14" fill="#1a1a1a"/>
