@@ -444,52 +444,52 @@ export default function Landing() {
         <p className="reveal" style={{textAlign:'center',fontSize:18,color:'#5a5a5a',marginBottom:80}}>Three sources. One unified AI. Infinite understanding.</p>
 
         <div className="chars-grid" style={{maxWidth:1200,margin:'0 auto',display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:32}}>
-          {[
-            {id:'📄 PDF', name:'Paige the PDF Reader', desc:'Upload PDFs, Word docs, text, or markdown files. Paige reads every word and answers your questions instantly.',
-              svg: <svg viewBox="0 0 200 200" fill="none" style={{width:200,height:200,margin:'0 auto 28px'}}>
-                <circle cx="100" cy="85" r="38" fill="#fef3c7"/>
-                <ellipse cx="100" cy="52" rx="30" ry="14" fill="#1a1a1a"/>
-                <rect x="70" y="52" width="60" height="10" rx="5" fill="#1a1a1a"/>
-                <circle cx="88" cy="82" r="5" fill="#1a1a1a"/><circle cx="112" cy="82" r="5" fill="#1a1a1a"/>
-                <path d="M88 96 Q100 106 112 96" stroke="#1a1a1a" strokeWidth="2.5" fill="none"/>
-                <path d="M62 135 Q62 118 100 118 Q138 118 138 135 L142 170 Q100 175 58 170 Z" fill="#ef4444"/>
-                <rect x="82" y="168" width="14" height="28" rx="7" fill="#1a1a1a"/><rect x="104" y="168" width="14" height="28" rx="7" fill="#1a1a1a"/>
-              </svg>
-            },
-            {id:'🌐 Website', name:'Webb the Web Surfer', desc:'Paste any URL. Webb scrapes the entire page and lets you chat with the actual content — articles, docs, anything.', delay:'reveal-delay-2',
-              svg: <svg viewBox="0 0 200 200" fill="none" style={{width:200,height:200,margin:'0 auto 28px'}}>
-                <circle cx="100" cy="85" r="38" fill="#dbeafe"/>
-                <rect x="72" y="48" width="56" height="16" rx="8" fill="#f59e0b"/>
-                <circle cx="88" cy="82" r="9" stroke="#1a1a1a" strokeWidth="2" fill="none"/><circle cx="112" cy="82" r="9" stroke="#1a1a1a" strokeWidth="2" fill="none"/>
-                <path d="M86 96 Q100 108 114 96" stroke="#1a1a1a" strokeWidth="2.5" fill="none"/>
-                <path d="M62 135 Q62 118 100 118 Q138 118 138 135 L142 170 Q100 175 58 170 Z" fill="#2563eb"/>
-                <circle cx="100" cy="144" r="10" stroke="white" strokeWidth="1.5" fill="none"/>
-                <rect x="82" y="168" width="14" height="28" rx="7" fill="#1a1a1a"/><rect x="104" y="168" width="14" height="28" rx="7" fill="#1a1a1a"/>
-              </svg>
-            },
-            {id:'▶ YouTube', name:'Yuki the Video Nerd', desc:'Drop a YouTube link. Yuki extracts the full transcript and lets you chat with the entire video — no watching required.', delay:'reveal-delay-3',
-              svg: <svg viewBox="0 0 200 200" fill="none" style={{width:200,height:200,margin:'0 auto 28px'}}>
-                <circle cx="100" cy="85" r="38" fill="#fce7f3"/>
-                <ellipse cx="100" cy="54" rx="32" ry="16" fill="#7c3aed"/>
-                <circle cx="88" cy="82" r="5" fill="#1a1a1a"/><circle cx="112" cy="82" r="5" fill="#1a1a1a"/>
-                <path d="M88 97 Q100 107 112 97" stroke="#1a1a1a" strokeWidth="2.5" fill="none"/>
-                <path d="M62 135 Q62 118 100 118 Q138 118 138 135 L142 170 Q100 175 58 170 Z" fill="#dc2626"/>
-                <rect x="88" y="134" width="24" height="18" rx="4" fill="white"/>
-                <path d="M95 139 L108 143 L95 147 Z" fill="#dc2626"/>
-                <rect x="82" y="168" width="14" height="28" rx="7" fill="#1a1a1a"/><rect x="104" y="168" width="14" height="28" rx="7" fill="#1a1a1a"/>
-              </svg>
-            }
-          ].map(char => (
-            <div key={char.name} className={`char-card reveal ${char.delay}`}>
-              {char.svg}
-              <div style={{display:'inline-block',background:'#f0f0f0',borderRadius:100,padding:'4px 12px',fontSize:11,fontWeight:600,letterSpacing:'0.06em',textTransform:'uppercase',color:'#5a5a5a',marginBottom:12}}>{char.tag}</div>
-              <h3 style={{fontFamily:'Syne,sans-serif',fontSize:26,fontWeight:800,letterSpacing:'-0.03em',marginBottom:10}}>{char.name}</h3>
-              <p style={{fontSize:15,color:'#5a5a5a',lineHeight:1.65}}>{char.desc}</p>
-<button onClick={() => navigate(`/upload?tab=${char.id}`)} style={{marginTop:24,background:'#0a0a0a',color:'#fff',border:'none',borderRadius:100,padding:'12px 28px',fontSize:14,fontWeight:600,width:'100%'}}>
-  Try with {char.tag.split(' ')[1]} →
-</button>
-            </div>
-          ))}
+{[
+  {id:'pdf', tag:'📄 Doc', name:'Paige the Doc Reader', desc:'Upload PDFs, Word docs, text, or markdown files. Paige reads every word and answers your questions instantly.',
+    svg: <svg viewBox="0 0 200 200" fill="none" style={{width:200,height:200,margin:'0 auto 28px'}}>
+      <circle cx="100" cy="85" r="38" fill="#fef3c7"/>
+      <ellipse cx="100" cy="52" rx="30" ry="14" fill="#1a1a1a"/>
+      <rect x="70" y="52" width="60" height="10" rx="5" fill="#1a1a1a"/>
+      <circle cx="88" cy="82" r="5" fill="#1a1a1a"/><circle cx="112" cy="82" r="5" fill="#1a1a1a"/>
+      <path d="M88 96 Q100 106 112 96" stroke="#1a1a1a" strokeWidth="2.5" fill="none"/>
+      <path d="M62 135 Q62 118 100 118 Q138 118 138 135 L142 170 Q100 175 58 170 Z" fill="#ef4444"/>
+      <rect x="82" y="168" width="14" height="28" rx="7" fill="#1a1a1a"/><rect x="104" y="168" width="14" height="28" rx="7" fill="#1a1a1a"/>
+    </svg>
+  },
+  {id:'web', tag:'🌐 Website', name:'Webb the Web Surfer', desc:'Paste any URL. Webb scrapes the entire page and lets you chat with the actual content — articles, docs, anything.', delay:'reveal-delay-2',
+    svg: <svg viewBox="0 0 200 200" fill="none" style={{width:200,height:200,margin:'0 auto 28px'}}>
+      <circle cx="100" cy="85" r="38" fill="#dbeafe"/>
+      <rect x="72" y="48" width="56" height="16" rx="8" fill="#f59e0b"/>
+      <circle cx="88" cy="82" r="9" stroke="#1a1a1a" strokeWidth="2" fill="none"/><circle cx="112" cy="82" r="9" stroke="#1a1a1a" strokeWidth="2" fill="none"/>
+      <path d="M86 96 Q100 108 114 96" stroke="#1a1a1a" strokeWidth="2.5" fill="none"/>
+      <path d="M62 135 Q62 118 100 118 Q138 118 138 135 L142 170 Q100 175 58 170 Z" fill="#2563eb"/>
+      <circle cx="100" cy="144" r="10" stroke="white" strokeWidth="1.5" fill="none"/>
+      <rect x="82" y="168" width="14" height="28" rx="7" fill="#1a1a1a"/><rect x="104" y="168" width="14" height="28" rx="7" fill="#1a1a1a"/>
+    </svg>
+  },
+  {id:'youtube', tag:'▶ YouTube', name:'Yuki the Video Nerd', desc:'Drop a YouTube link. Yuki extracts the full transcript and lets you chat with the entire video — no watching required.', delay:'reveal-delay-3',
+    svg: <svg viewBox="0 0 200 200" fill="none" style={{width:200,height:200,margin:'0 auto 28px'}}>
+      <circle cx="100" cy="85" r="38" fill="#fce7f3"/>
+      <ellipse cx="100" cy="54" rx="32" ry="16" fill="#7c3aed"/>
+      <circle cx="88" cy="82" r="5" fill="#1a1a1a"/><circle cx="112" cy="82" r="5" fill="#1a1a1a"/>
+      <path d="M88 97 Q100 107 112 97" stroke="#1a1a1a" strokeWidth="2.5" fill="none"/>
+      <path d="M62 135 Q62 118 100 118 Q138 118 138 135 L142 170 Q100 175 58 170 Z" fill="#dc2626"/>
+      <rect x="88" y="134" width="24" height="18" rx="4" fill="white"/>
+      <path d="M95 139 L108 143 L95 147 Z" fill="#dc2626"/>
+      <rect x="82" y="168" width="14" height="28" rx="7" fill="#1a1a1a"/><rect x="104" y="168" width="14" height="28" rx="7" fill="#1a1a1a"/>
+    </svg>
+  }
+].map(char => (
+  <div key={char.name} className={`char-card reveal ${char.delay}`}>
+    {char.svg}
+    <div style={{display:'inline-block',background:'#f0f0f0',borderRadius:100,padding:'4px 12px',fontSize:11,fontWeight:600,letterSpacing:'0.06em',textTransform:'uppercase',color:'#5a5a5a',marginBottom:12}}>{char.tag}</div>
+    <h3 style={{fontFamily:'Syne,sans-serif',fontSize:26,fontWeight:800,letterSpacing:'-0.03em',marginBottom:10}}>{char.name}</h3>
+    <p style={{fontSize:15,color:'#5a5a5a',lineHeight:1.65}}>{char.desc}</p>
+    <button onClick={() => navigate(`/upload?tab=${char.id}`)} style={{marginTop:24,background:'#0a0a0a',color:'#fff',border:'none',borderRadius:100,padding:'12px 28px',fontSize:14,fontWeight:600,width:'100%'}}>
+      Try with {char.id === 'pdf' ? 'Doc' : char.tag.split(' ')[1]} →
+    </button>
+  </div>
+))}
         </div>
       </section>
 
