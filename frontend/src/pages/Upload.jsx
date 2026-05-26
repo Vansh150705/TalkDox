@@ -1,13 +1,22 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import axios from 'axios'
 
 const API = import.meta.env.VITE_API_URL || ''
 
 export default function Upload() {
   const navigate = useNavigate()
-  const [activeTab, setActiveTab] = useState('pdf')
+  const [searchParams] = useSearchParams()
+  const initialTab = searchParams.get('tab') || 'pdf'
+  const [activeTab, setActiveTab] = useState(initialTab)
   const [loading, setLoading] = useState(false)
+  
+  useEffect(() => {
+    const tabFromUrl = searchParams.get('tab')
+    if (tabFromUrl && ['pdf', 'web', 'youtube'].includes(tabFromUrl)) {
+      setActiveTab(tabFromUrl)
+    }
+  }, [searchParams])
   const [loadingStep, setLoadingStep] = useState(0)
   const [error, setError] = useState('')
   const [files, setFiles] = useState([])

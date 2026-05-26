@@ -445,7 +445,7 @@ export default function Landing() {
 
         <div className="chars-grid" style={{maxWidth:1200,margin:'0 auto',display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:32}}>
           {[
-            {tag:'📄 PDF', name:'Paige the PDF Reader', desc:'Upload PDFs, Word docs, text, or markdown files. Paige reads every word and answers your questions instantly.',
+            {id:'📄 PDF', name:'Paige the PDF Reader', desc:'Upload PDFs, Word docs, text, or markdown files. Paige reads every word and answers your questions instantly.',
               svg: <svg viewBox="0 0 200 200" fill="none" style={{width:200,height:200,margin:'0 auto 28px'}}>
                 <circle cx="100" cy="85" r="38" fill="#fef3c7"/>
                 <ellipse cx="100" cy="52" rx="30" ry="14" fill="#1a1a1a"/>
@@ -456,7 +456,7 @@ export default function Landing() {
                 <rect x="82" y="168" width="14" height="28" rx="7" fill="#1a1a1a"/><rect x="104" y="168" width="14" height="28" rx="7" fill="#1a1a1a"/>
               </svg>
             },
-            {tag:'🌐 Website', name:'Webb the Web Surfer', desc:'Paste any URL. Webb scrapes the entire page and lets you chat with the actual content — articles, docs, anything.', delay:'reveal-delay-2',
+            {id:'🌐 Website', name:'Webb the Web Surfer', desc:'Paste any URL. Webb scrapes the entire page and lets you chat with the actual content — articles, docs, anything.', delay:'reveal-delay-2',
               svg: <svg viewBox="0 0 200 200" fill="none" style={{width:200,height:200,margin:'0 auto 28px'}}>
                 <circle cx="100" cy="85" r="38" fill="#dbeafe"/>
                 <rect x="72" y="48" width="56" height="16" rx="8" fill="#f59e0b"/>
@@ -467,7 +467,7 @@ export default function Landing() {
                 <rect x="82" y="168" width="14" height="28" rx="7" fill="#1a1a1a"/><rect x="104" y="168" width="14" height="28" rx="7" fill="#1a1a1a"/>
               </svg>
             },
-            {tag:'▶ YouTube', name:'Yuki the Video Nerd', desc:'Drop a YouTube link. Yuki extracts the full transcript and lets you chat with the entire video — no watching required.', delay:'reveal-delay-3',
+            {id:'▶ YouTube', name:'Yuki the Video Nerd', desc:'Drop a YouTube link. Yuki extracts the full transcript and lets you chat with the entire video — no watching required.', delay:'reveal-delay-3',
               svg: <svg viewBox="0 0 200 200" fill="none" style={{width:200,height:200,margin:'0 auto 28px'}}>
                 <circle cx="100" cy="85" r="38" fill="#fce7f3"/>
                 <ellipse cx="100" cy="54" rx="32" ry="16" fill="#7c3aed"/>
@@ -485,9 +485,9 @@ export default function Landing() {
               <div style={{display:'inline-block',background:'#f0f0f0',borderRadius:100,padding:'4px 12px',fontSize:11,fontWeight:600,letterSpacing:'0.06em',textTransform:'uppercase',color:'#5a5a5a',marginBottom:12}}>{char.tag}</div>
               <h3 style={{fontFamily:'Syne,sans-serif',fontSize:26,fontWeight:800,letterSpacing:'-0.03em',marginBottom:10}}>{char.name}</h3>
               <p style={{fontSize:15,color:'#5a5a5a',lineHeight:1.65}}>{char.desc}</p>
-              <button onClick={() => navigate('/upload')} style={{marginTop:24,background:'#0a0a0a',color:'#fff',border:'none',borderRadius:100,padding:'12px 28px',fontSize:14,fontWeight:600,width:'100%'}}>
-                Try with {char.tag.split(' ')[1]} →
-              </button>
+<button onClick={() => navigate(`/upload?tab=${char.id}`)} style={{marginTop:24,background:'#0a0a0a',color:'#fff',border:'none',borderRadius:100,padding:'12px 28px',fontSize:14,fontWeight:600,width:'100%'}}>
+  Try with {char.tag.split(' ')[1]} →
+</button>
             </div>
           ))}
         </div>
