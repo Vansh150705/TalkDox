@@ -1,7 +1,7 @@
 import re
 
 VAGUE_PATTERNS = [
-    r'^(explain|tell me|describe|summarize|elaborate|go on|continue)$',
+    r'^(explain|tell me|describe|go on|continue)$',
     r'^(more|info|information|details?|and|so)$',
     r'^(explain this|tell me more|what does this mean|describe this|elaborate on this)$',
     r'^(yes|no|ok|okay|sure|fine|alright|got it|i see|hmm|hm|cool|nice|thanks)$',

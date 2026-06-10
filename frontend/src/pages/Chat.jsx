@@ -855,7 +855,7 @@ html {
 .mic-btn.listening {
   background: #fef2f2;
   border-color: #fca5a5;
-  color: #dc2626;
+  color: #dc2627;
   animation: micPulse 1.5s ease-in-out infinite;
 }
 @keyframes micPulse {
