@@ -8,7 +8,8 @@ import tempfile
 
 from dotenv import load_dotenv
 from langchain_community.vectorstores import FAISS
-from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
+from langchain_google_genai import GoogleGenerativeAIEmbeddings  # embeddings only (Groq has no embeddings API)
+from langchain_groq import ChatGroq
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 import requests
@@ -23,6 +24,9 @@ from utils.agents import (
 )
 
 load_dotenv()
+
+# Chat LLM model (Groq). Change in one place to swap models.
+CHAT_MODEL = "llama-3.3-70b-versatile"
 
 app = FastAPI()
 
@@ -176,7 +180,7 @@ async def upload_pdf(files: list[UploadFile] = File(...)):
 
 async def generate_dna_background(full_text):
     try:
-        llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
+        llm = ChatGroq(model=CHAT_MODEL, temperature=0.2)
         dna = generate_document_dna(full_text, llm)
         if dna:
             store["dna"] = dna
@@ -396,7 +400,7 @@ async def chat(
         sources = list(set([f"{d.metadata['source']} p.{d.metadata['page']}" for d in docs]))
         confidence = get_confidence(docs, question)
 
-        llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
+        llm = ChatGroq(model=CHAT_MODEL, temperature=0.2)
         prompt = build_prompt(question, context, store["chat_history"], mode, persona, store["doc_language"])
         initial = llm.invoke(prompt).content
         answer = self_reflect_and_improve(question, context, initial, llm)
@@ -418,7 +422,7 @@ async def get_dna():
 @app.post("/api/tools")
 async def run_tool(tool: str = Form(...)):
     try:
-        llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.3)
+        llm = ChatGroq(model=CHAT_MODEL, temperature=0.3)
         sample = store["full_text"][:4000]
         lang = store["doc_language"]
         lang_note = f" Respond in {lang}." if lang != "English" else ""
@@ -444,7 +448,7 @@ async def run_tool(tool: str = Form(...)):
 async def get_timeline():
     try:
         import json as jsonlib
-        llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.1)
+        llm = ChatGroq(model=CHAT_MODEL, temperature=0.1)
         sample = store["full_text"][:6000]
         prompt = f"""Extract ALL dates and events. Return ONLY valid JSON array:
 [{{"date":"...","sort_key":"YYYY-MM-DD","event":"...","type":"deadline/milestone/event/period/announcement/other","importance":"high/medium/low"}}]
@@ -465,7 +469,7 @@ Document: {sample}"""
 async def get_flashcards(count: int = Form(10)):
     try:
         import json as jsonlib
-        llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.4)
+        llm = ChatGroq(model=CHAT_MODEL, temperature=0.4)
         sample = store["full_text"][:5000]
         prompt = f"""Generate exactly {count} flashcards. Return ONLY valid JSON array:
 [{{"question":"...","answer":"...","difficulty":"easy/medium/hard","topic":"..."}}]
@@ -530,7 +534,7 @@ Document B ({doc_b}): {context_b}
 Question: {question}
 Answer specifically, label Document A / Document B clearly."""
 
-        llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
+        llm = ChatGroq(model=CHAT_MODEL, temperature=0.2)
         answer = llm.invoke(prompt).content
 
         return {"answer": answer, "sources_a": sources_a, "sources_b": sources_b}
