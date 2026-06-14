@@ -489,16 +489,16 @@ Material: {sample}"""
 async def upload_compare(files: list[UploadFile] = File(...)):
     try:
         import io
-        class FileWrapper:
+        # Subclass BytesIO so PdfReader gets a real seekable stream (read/seek/tell),
+        # while still carrying a .name for source metadata.
+        class FileWrapper(io.BytesIO):
             def __init__(self, content, name):
-                self._content = content
+                super().__init__(content)
                 self.name = name
-            def read(self, *args):
-                return self._content
 
         f = files[0]
         content = await f.read()
-        wrapped = [FileWrapper(io.BytesIO(content), f.filename)]
+        wrapped = [FileWrapper(content, f.filename)]
         chunks, metas, pages, full_text = extract_text_from_pdfs(wrapped)
         embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
         vs = FAISS.from_texts(chunks, embeddings, metadatas=metas)
