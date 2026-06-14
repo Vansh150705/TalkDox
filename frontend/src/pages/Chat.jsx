@@ -189,20 +189,20 @@ recognition.onresult = (event) => {
       const fd = new FormData(); fd.append('tool', tool)
       const r = await axios.post(`${API}/api/tools`, fd)
       setToolResult(r.data.result)
-    } catch(e) { setToolResult('❌ Tool failed.') }
+    } catch { setToolResult('❌ Tool failed.') }
     finally { setToolLoading(false) }
   }
 
   const extractTimeline = async () => {
     setTlLoading(true)
     try { const r = await axios.post(`${API}/api/timeline`); setTimeline(r.data.timeline); setTlGenerated(true) }
-    catch(e) {} finally { setTlLoading(false) }
+    catch { /* ignore */ } finally { setTlLoading(false) }
   }
 
   const generateFlashcards = async () => {
     setFcLoading(true)
     try { const fd = new FormData(); fd.append('count', fcCount); const r = await axios.post(`${API}/api/flashcards`, fd); setFlashcards(r.data.flashcards) }
-    catch(e) {} finally { setFcLoading(false) }
+    catch { /* ignore */ } finally { setFcLoading(false) }
   }
 
   const uploadCompare = async () => {
@@ -221,7 +221,7 @@ recognition.onresult = (event) => {
       const fd = new FormData(); fd.append('question', q)
       const r = await axios.post(`${API}/api/compare/chat`, fd)
       setCompareMessages(prev => [...prev, {role:'assistant',content:r.data.answer,sources_a:r.data.sources_a,sources_b:r.data.sources_b}])
-    } catch(e) {} finally { setCompareLoading(false) }
+    } catch { /* ignore */ } finally { setCompareLoading(false) }
   }
 
   const reset = async () => {
@@ -855,7 +855,7 @@ html {
 .mic-btn.listening {
   background: #fef2f2;
   border-color: #fca5a5;
-  color: #dc2627;
+  color: #dc2626;
   animation: micPulse 1.5s ease-in-out infinite;
 }
 @keyframes micPulse {
