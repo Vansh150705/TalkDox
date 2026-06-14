@@ -323,7 +323,9 @@ if (!state) return (
   const diffStyles = {easy:{bg:'#f0fdf4',border:'#86efac',color:'#16a34a',label:'🟢 Easy'},medium:{bg:'#fefce8',border:'#fde68a',color:'#d97706',label:'🟡 Medium'},hard:{bg:'#fef2f2',border:'#fca5a5',color:'#dc2626',label:'🔴 Hard'}}
 
   const sourceIcon = state.source_type==='pdf'?'📄':state.source_type==='web'?'🌐':'▶'
-  const sourceLabel = state.source_type==='pdf'?'PDF Document':state.source_type==='web'?'Website':'YouTube Video'
+  const docExt = (state.pdf_names?.[0] || '').split('.').pop().toLowerCase()
+  const docLabel = {pdf:'PDF Document', docx:'Word Document', txt:'Text Document', md:'Markdown Document'}[docExt] || 'Document'
+  const sourceLabel = state.source_type==='pdf'?docLabel:state.source_type==='web'?'Website':'YouTube Video'
 
   return (
     <>
