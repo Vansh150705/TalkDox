@@ -3,6 +3,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://vansh150705-talkdox-backend.hf.space/api/:path*"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
     }
   ]
 }
