@@ -212,8 +212,8 @@ recognition.onresult = (event) => {
     setCompareLoaded(true)
   }
 
-  const sendCompare = async () => {
-    const q = compareInput.trim(); if (!q) return
+  const sendCompare = async (override) => {
+    const q = ((override ?? compareInput) || '').toString().trim(); if (!q) return
     setCompareInput('')
     setCompareMessages(prev => [...prev, {role:'user',content:q}])
     setCompareLoading(true)
@@ -1473,7 +1473,7 @@ html {
                         {compareMessages.length===0 && (
                           <div className="sug-grid" style={{marginTop:20}}>
                             {['What are the key differences?','What do both agree on?','Which is more comprehensive?','What is in A but missing in B?'].map(q=>(
-                              <button key={q} className="sug-card" onClick={()=>{setCompareInput(q);setTimeout(sendCompare,100)}}>{q}</button>
+                              <button key={q} className="sug-card" onClick={()=>sendCompare(q)}>{q}</button>
                             ))}
                           </div>
                         )}
@@ -1504,6 +1504,18 @@ html {
                             </div>
                           </div>
                         )}
+                      </div>
+                      <div style={{display:'flex',gap:8,marginTop:16}}>
+                        <input
+                          className="input-field"
+                          style={{border:'1.5px solid #e2e2e2',borderRadius:14,padding:'12px 16px',flex:1}}
+                          value={compareInput}
+                          onChange={e=>setCompareInput(e.target.value)}
+                          onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendCompare()}}}
+                          placeholder="Ask a comparison question..."
+                          disabled={compareLoading}
+                        />
+                        <button className="send-btn" onClick={()=>sendCompare()} disabled={!compareInput.trim()||compareLoading}>→</button>
                       </div>
                     </div>
                   )}
