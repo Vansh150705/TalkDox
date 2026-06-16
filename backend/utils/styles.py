@@ -1,8 +1,4 @@
-"""
-utils/styles.py
-Premium UI — white background, full polish, skeleton loaders,
-smooth animations, Settings tab removed.
-"""
+# CSS + JS injected into the Streamlit UI. White theme, sidebar hidden.
 
 STYLES = """
 <style>
@@ -10,9 +6,7 @@ STYLES = """
 
 *, *::before, *::after { box-sizing: border-box; }
 
-/* ============================================================
-   BASE — White background throughout
-   ============================================================ */
+/* base — white background throughout */
 html, body,
 [data-testid="stAppViewContainer"],
 [data-testid="stMain"],
@@ -34,9 +28,7 @@ section[data-testid="stSidebar"] + div,
 [data-testid="stSidebar"]    { display: none !important; }
 [data-testid="stDecoration"] { display: none !important; }
 
-/* ============================================================
-   ANIMATIONS
-   ============================================================ */
+/* animations */
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(12px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -70,9 +62,7 @@ section[data-testid="stSidebar"] + div,
     50%     { opacity: 0.45; }
 }
 
-/* ============================================================
-   BUTTONS
-   ============================================================ */
+/* buttons */
 .stButton > button {
     background: #111827 !important;
     color: #ffffff !important;
@@ -113,9 +103,7 @@ section[data-testid="stSidebar"] + div,
     box-shadow: 0 2px 8px rgba(0,0,0,0.07) !important;
 }
 
-/* ============================================================
-   FILE UPLOADER — fully white/light
-   ============================================================ */
+/* file uploader — fully white/light */
 [data-testid="stFileUploader"] {
     background: #ffffff !important;
     border: 2px dashed #e5e7eb !important;
@@ -152,9 +140,7 @@ section[data-testid="stSidebar"] + div,
     font-size: 0.875rem !important;
 }
 
-/* ============================================================
-   CHAT INPUT — force white on ALL internal elements
-   ============================================================ */
+/* chat input — force white on all internal elements */
 [data-testid="stChatInput"],
 [data-testid="stChatInput"] > div,
 [data-testid="stChatInput"] > div > div,
@@ -211,9 +197,7 @@ div[class*="chatInput"] {
     background: #ffffff !important;
 }
 
-/* ============================================================
-   SELECTBOX
-   ============================================================ */
+/* selectbox */
 [data-testid="stSelectbox"] > div > div {
     background: #ffffff !important;
     border: 1.5px solid #e5e7eb !important;
@@ -227,9 +211,7 @@ div[class*="chatInput"] {
     box-shadow: 0 0 0 3px rgba(17,24,39,0.08) !important;
 }
 
-/* ============================================================
-   TABS
-   ============================================================ */
+/* tabs */
 .stTabs [data-baseweb="tab-list"] {
     background: transparent !important;
     border-bottom: 1.5px solid #f3f4f6 !important;
@@ -255,9 +237,7 @@ div[class*="chatInput"] {
     font-weight: 600 !important;
 }
 
-/* ============================================================
-   METRIC CARDS
-   ============================================================ */
+/* metric cards */
 .metric-card {
     background: #ffffff;
     border: 1px solid #f3f4f6;
@@ -287,9 +267,7 @@ div[class*="chatInput"] {
     font-weight: 500;
 }
 
-/* ============================================================
-   CHAT MESSAGES
-   ============================================================ */
+/* chat messages */
 .msg-user {
     display: flex;
     justify-content: flex-end;
@@ -326,9 +304,7 @@ div[class*="chatInput"] {
     letter-spacing: 0.01em;
 }
 
-/* ============================================================
-   TYPING INDICATOR
-   ============================================================ */
+/* typing indicator */
 .typing-indicator {
     display: inline-flex;
     align-items: center;
@@ -358,9 +334,7 @@ div[class*="chatInput"] {
 .typing-dots span:nth-child(2) { animation-delay: 0.16s; }
 .typing-dots span:nth-child(3) { animation-delay: 0.32s; }
 
-/* ============================================================
-   SKELETON LOADER
-   ============================================================ */
+/* skeleton loader */
 .skeleton-line {
     background: linear-gradient(90deg, #f3f4f6 25%, #e9eaec 50%, #f3f4f6 75%);
     background-size: 600px 100%;
@@ -382,9 +356,7 @@ div[class*="chatInput"] {
     animation: fadeIn 0.2s ease both;
 }
 
-/* ============================================================
-   SOURCE CHIPS
-   ============================================================ */
+/* source chips */
 .source-chip {
     display: inline-block;
     background: #f9fafb;
@@ -400,9 +372,7 @@ div[class*="chatInput"] {
 }
 .source-chip:hover { background: #f3f4f6; color: #374151; }
 
-/* ============================================================
-   CONFIDENCE BAR
-   ============================================================ */
+/* confidence bar */
 .conf-bar-outer {
     background: #f3f4f6;
     border-radius: 6px;
@@ -416,9 +386,7 @@ div[class*="chatInput"] {
     transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ============================================================
-   DNA / INFO CARDS
-   ============================================================ */
+/* dna / info cards */
 .dna-card {
     background: #ffffff;
     border: 1px solid #f3f4f6;
@@ -465,9 +433,7 @@ div[class*="chatInput"] {
     transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ============================================================
-   SECTION LABEL
-   ============================================================ */
+/* section label */
 .section-label {
     font-size: 0.7rem;
     color: #9ca3af;
@@ -477,9 +443,7 @@ div[class*="chatInput"] {
     font-weight: 600;
 }
 
-/* ============================================================
-   DOC PILLS + STATUS BADGE
-   ============================================================ */
+/* doc pills + status badge */
 .doc-pill {
     display: inline-flex;
     align-items: center;
@@ -514,9 +478,7 @@ div[class*="chatInput"] {
     border: 1px solid #bbf7d0;
 }
 
-/* ============================================================
-   UPLOAD FEEDBACK
-   ============================================================ */
+/* upload feedback */
 .upload-success {
     background: #f0fdf4;
     color: #15803d;
@@ -533,9 +495,7 @@ div[class*="chatInput"] {
     letter-spacing: 0.01em;
 }
 
-/* ============================================================
-   STEP PROGRESS LOADER
-   ============================================================ */
+/* step progress loader */
 .step-loader {
     background: #ffffff;
     border: 1px solid #f3f4f6;
@@ -564,9 +524,7 @@ div[class*="chatInput"] {
     overflow: hidden;
 }
 
-/* ============================================================
-   EMPTY STATE
-   ============================================================ */
+/* empty state */
 .empty-state {
     text-align: center;
     padding: 4rem 2rem;
@@ -611,9 +569,7 @@ div[class*="chatInput"] {
     font-size: 0.78rem; color: #374151; font-weight: 500;
 }
 
-/* ============================================================
-   ANALYTICS BARS
-   ============================================================ */
+/* analytics bars */
 .analytics-bar-outer {
     background: #f3f4f6;
     border-radius: 6px;
@@ -628,9 +584,7 @@ div[class*="chatInput"] {
     transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ============================================================
-   SUGGESTION PILLS
-   ============================================================ */
+/* suggestion pills */
 .sug-pill-wrap .stButton > button {
     background: #ffffff !important;
     color: #374151 !important;
@@ -651,9 +605,7 @@ div[class*="chatInput"] {
     background: #fafafa !important;
 }
 
-/* ============================================================
-   INFO / WARNING BANNER
-   ============================================================ */
+/* info / warning banner */
 .info-banner {
     background: #eff6ff;
     border: 1px solid #bfdbfe;
@@ -678,18 +630,14 @@ div[class*="chatInput"] {
     margin-top: 1.2rem;
 }
 
-/* ============================================================
-   DIVIDER
-   ============================================================ */
+/* divider */
 .dm-divider {
     height: 1px;
     background: #f3f4f6;
     margin: 1.4rem 0;
 }
 
-/* ============================================================
-   HEADER GRADIENT ACCENT
-   ============================================================ */
+/* header gradient accent */
 .header-accent {
     height: 3px;
     width: 44px;
@@ -703,10 +651,7 @@ div[class*="chatInput"] {
 </style>
 
 <script>
-// ============================================================
-// VOICE MIC — injected into chat input box (like ChatGPT)
-// Uses browser Web Speech API. No external API needed.
-// ============================================================
+// drop a mic button into the chat input (browser Web Speech API, no server calls)
 function injectVoiceIntoChat() {
     const chatInput = document.querySelector('[data-testid="stChatInput"]');
     if (!chatInput) return;
@@ -799,7 +744,7 @@ function injectVoiceIntoChat() {
     });
 }
 
-// Retry injection multiple times to handle Streamlit's delayed render
+// Streamlit renders late, so keep retrying for a bit
 function tryInject(attempts) {
     if (attempts <= 0) return;
     const ci = document.querySelector('[data-testid="stChatInput"]');
@@ -812,7 +757,7 @@ function tryInject(attempts) {
 document.addEventListener('DOMContentLoaded', () => tryInject(8));
 setTimeout(() => tryInject(8), 500);
 
-// Watch DOM for Streamlit rerenders
+// re-add the button whenever Streamlit re-renders the input
 const _obs = new MutationObserver(() => {
     const ci = document.querySelector('[data-testid="stChatInput"]');
     if (ci && !ci.querySelector('#dm-mic-btn')) {

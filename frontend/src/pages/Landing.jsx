@@ -179,7 +179,7 @@ export default function Landing() {
         .source-badge { animation: slideInLeft 1s ease 0.8s both; }
         section { width: 100%; overflow: hidden; }
 
-        /* HERO BUTTONS - shared classes */
+        /* hero buttons */
         .hero-btns {
           display: flex;
           gap: 14px;
@@ -205,7 +205,7 @@ export default function Landing() {
           gap: 6px;
         }
 
-        /* STATS BAR */
+        /* stats bar */
         .stats-grid {
           max-width: 1200px;
           margin: 0 auto;
@@ -215,7 +215,7 @@ export default function Landing() {
           text-align: center;
         }
 
-        /* ═══════════ MOBILE ═══════════ */
+        /* mobile tweaks */
         @media (max-width: 768px) {
           .browser-frame, .conf-badge, .source-badge { display: none !important; }
 
@@ -225,7 +225,7 @@ export default function Landing() {
           .nav-logo { font-size: 15px !important; }
           .nav-cta { padding: 7px 12px !important; font-size: 11px !important; }
 
-          /* HERO */
+          /* hero */
           .hero-section {
             padding: 130px 20px 40px !important;
             min-height: auto !important;
@@ -243,7 +243,7 @@ export default function Landing() {
           }
           .hero-p { font-size: 15px !important; }
 
-          /* BUTTONS — equal size side-by-side */
+          /* buttons sit side by side at equal width */
           .hero-btns {
             display: flex !important;
             flex-direction: row !important;
@@ -261,13 +261,13 @@ export default function Landing() {
             min-width: 0 !important;
           }
 
-          /* STATS — 2x2 grid */
+          /* stats become a 2x2 grid */
           .stats-grid {
             grid-template-columns: repeat(2, 1fr) !important;
             gap: 32px !important;
           }
 
-          /* CHARACTERS */
+          /* characters */
           .chars-grid {
             grid-template-columns: 1fr !important;
             max-width: 400px !important;
@@ -277,31 +277,31 @@ export default function Landing() {
           section[id="sources"] { padding: 60px 20px !important; }
           section[id="sources"] h2 { font-size: 32px !important; }
 
-          /* FEATURES */
+          /* features */
           section[id="features"] { padding: 60px 20px !important; }
           section[id="features"] h2 { font-size: 32px !important; }
           .features-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
           .feat-card { padding: 24px !important; }
 
-          /* HOW IT WORKS */
+          /* how it works */
           section[id="how-it-works"] { padding: 60px 20px !important; }
           section[id="how-it-works"] h2 { font-size: 32px !important; }
           .steps-grid { grid-template-columns: 1fr !important; gap: 48px !important; }
           .step-line { display: none !important; }
           .step { padding: 0 !important; }
 
-          /* CTA */
+          /* cta */
           .cta-section { padding: 60px 20px !important; }
           .cta-inner { padding: 50px 24px !important; border-radius: 24px !important; }
           .cta-inner h2 { font-size: 32px !important; }
           .cta-feature-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
 
-          /* FOOTER */
+          /* footer */
           footer { padding: 40px 20px 30px !important; }
           .footer-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
           .footer-bottom { flex-direction: column !important; text-align: center !important; gap: 8px !important; }
 
-          /* BANNER */
+          /* top banner */
           .top-banner { font-size: 11px !important; padding: 8px 14px !important; }
         }
 

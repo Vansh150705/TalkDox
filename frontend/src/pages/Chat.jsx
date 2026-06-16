@@ -14,7 +14,7 @@ function FlashcardItem({ card, ds, index }) {
       style={{ animationDelay: `${index * 0.08}s` }}
     >
       <div className="flashcard-inner">
-        {/* FRONT — Question */}
+        {/* front of card */}
         <div className="flashcard-front" style={{background:ds.bg,borderColor:ds.border}}>
           <div className="flashcard-header">
             <span className="flashcard-diff" style={{color:ds.color,background:'#fff'}}>{ds.label}</span>
@@ -29,7 +29,7 @@ function FlashcardItem({ card, ds, index }) {
           </div>
         </div>
         
-        {/* BACK — Answer */}
+        {/* back of card */}
         <div className="flashcard-back">
           <div className="flashcard-header">
             <span className="flashcard-diff" style={{background:'rgba(255,255,255,0.15)',color:'#fff'}}>✓ Answer</span>
@@ -362,7 +362,7 @@ html {
           z-index: 0;
         }
 
-        /* ── SIDEBAR ── */
+        /* sidebar */
         .sidebar {
           background: #fafafa;
           border-right: 1px solid #e2e2e2;
@@ -502,7 +502,7 @@ html {
           border-top: 1px solid #f0f0f0;
         }
 
-        /* ── MAIN ── */
+        /* main column */
         .main-area {
           display: flex;
           flex-direction: column;
@@ -555,7 +555,7 @@ html {
           margin: 0 auto;
         }
 
-        /* ── CHAT MESSAGES ── */
+        /* chat messages */
         .messages-list {
           display: flex;
           flex-direction: column;
@@ -746,7 +746,7 @@ html {
         .send-btn:hover:not(:disabled) { background: #222; transform: scale(1.05); }
         .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        /* ── DNA TAB ── */
+        /* dna tab */
         .dna-grid { display: flex; flex-direction: column; gap: 14px; }
         .dna-card {
           background: #fff;
@@ -778,7 +778,7 @@ html {
         }
         .dna-tag:hover { background: #0a0a0a; color: #fff; border-color: #0a0a0a; }
 
-        /* ── TOOLS ── */
+        /* tools */
         .tools-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -823,7 +823,7 @@ html {
         }
         @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
-        /* ── ANALYTICS ── */
+        /* analytics */
         .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 16px; }
         .stat-card {
           background: #fff;
@@ -865,7 +865,7 @@ html {
   50% { box-shadow: 0 0 0 8px rgba(220,38,38,0); }
 }
 
-        /* ── TIMELINE ── */
+        /* timeline */
         .timeline-wrap {
           position: relative;
           padding-left: 30px;
@@ -888,7 +888,7 @@ html {
         }
         .tl-card { border-radius: 14px; padding: 14px 18px; }
 
-/* ── 3D FLASHCARDS ── */
+/* flip flashcards */
 .flashcard {
   perspective: 1500px;
   margin-bottom: 18px;
@@ -1044,7 +1044,7 @@ html {
   .flashcard-answer { font-size: 14px; }
 }
 
-        /* ── COMPARE ── */
+        /* compare */
         .cmp-tags {
           display: flex; gap: 10px; align-items: center;
           margin-bottom: 18px;
@@ -1201,7 +1201,7 @@ html {
       <div className="chat-shell">
         <div className="chat-bg" />
 
-        {/* SIDEBAR */}
+        {/* Sidebar */}
         <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
           <div className="sidebar-logo">TalkDox 🧠</div>
 
@@ -1236,7 +1236,7 @@ html {
           </div>
         </aside>
 
-        {/* MAIN */}
+        {/* Main */}
         <main className="main-area">
           <div className="top-bar">
   <button className="mobile-menu-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>☰</button>
@@ -1267,7 +1267,7 @@ html {
           <div className="content-area">
             <div className="content-inner">
 
-              {/* CHAT */}
+              {/* Chat tab */}
               {activeTab==='chat' && (
                 <div className="messages-list">
                   {messages.length===0 && (
@@ -1322,7 +1322,7 @@ html {
                 </div>
               )}
 
-              {/* DNA */}
+              {/* Document DNA tab */}
              {activeTab==='dna' && (
   <div>
     {!state.dna ? (
@@ -1387,7 +1387,7 @@ html {
                 </div>
               )}
 
-              {/* TOOLS */}
+              {/* Smart tools tab */}
               {activeTab==='tools' && (
                 <div>
                   <div className="tools-grid">
@@ -1414,7 +1414,7 @@ html {
                 </div>
               )}
 
-              {/* ANALYTICS */}
+              {/* Analytics tab */}
               {activeTab==='analytics' && analytics && (
                 <div>
                   {analytics.total_q === 0 ? (
@@ -1449,7 +1449,7 @@ html {
                 </div>
               )}
 
-              {/* COMPARE */}
+              {/* Compare tab */}
               {activeTab==='compare' && (
                 <div>
                   {!compareLoaded ? (
@@ -1524,7 +1524,7 @@ html {
                 </div>
               )}
 
-              {/* TIMELINE */}
+              {/* Timeline tab */}
               {activeTab==='timeline' && (
                 <div>
                   {!tlGenerated ? (
@@ -1565,7 +1565,7 @@ html {
                 </div>
               )}
 
-              {/* FLASHCARDS */}
+              {/* Flashcards tab */}
               {activeTab==='flashcards' && (
                 <div>
                   {flashcards.length === 0 ? (
@@ -1608,7 +1608,7 @@ html {
           </div>
 
 
-{/* CHAT INPUT */}
+{/* Chat input bar */}
 {activeTab === 'chat' && (
   <div className="input-wrap">
     <div className="input-inner">

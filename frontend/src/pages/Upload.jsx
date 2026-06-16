@@ -106,7 +106,7 @@ const handleDrop = (e) => {
   const activeSteps = activeTab === 'pdf' ? pdfSteps : activeTab === 'web' ? webSteps : ytSteps
   const progress = loading ? Math.round((loadingStep / (activeSteps.length - 1)) * 100) : 0
 
-  // SVG Characters from landing page
+  // reuse the buddy characters from the landing page
   const PaigeSVG = (
     <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="100" cy="85" r="38" fill="#fef3c7"/>
@@ -260,7 +260,7 @@ const handleDrop = (e) => {
           z-index: 1;
         }
 
-        /* ── LEFT — Character + Pitch ── */
+        /* left side: character + pitch */
         .left-side {
           display: flex;
           flex-direction: column;
@@ -331,7 +331,7 @@ const handleDrop = (e) => {
           font-style: italic;
         }
 
-        /* ── RIGHT — Upload Card ── */
+        /* right side: upload card */
         .right-side {
           display: flex;
           align-items: center;
@@ -589,7 +589,7 @@ const handleDrop = (e) => {
 
         <div className="up-main">
 
-          {/* LEFT */}
+          {/* Left side */}
           <div className="left-side">
             <div className="badge">
               <span className="badge-dot" />
@@ -611,7 +611,7 @@ const handleDrop = (e) => {
             </div>
           </div>
 
-          {/* RIGHT */}
+          {/* Right side */}
           <div className="right-side">
             <div className="up-card">
 
