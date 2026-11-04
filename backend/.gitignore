@@ -1,8 +1,8 @@
-# Environment variables / secrets
 .env
-
-# Python cache
+data/
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
+.pytest_cache/
+venv/
+.venv/
+tests/eval/last_report.json
