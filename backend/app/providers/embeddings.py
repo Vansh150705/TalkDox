@@ -61,7 +61,9 @@ class GeminiEmbedder(BaseEmbedder):
         from google.genai import types
         self._types = types
         self._client = genai.Client(api_key=settings.gemini_api_key,
-                                    http_options=types.HttpOptions(timeout=int(settings.llm_timeout_s * 1000)))
+                                    http_options=types.HttpOptions(
+                                        timeout=int(settings.llm_timeout_s * 1000),
+                                        **({"base_url": settings.gemini_base_url} if settings.gemini_base_url else {})))
         self.model = settings.embedding_model
         self.dim = settings.embedding_dim
         self.retries = settings.llm_max_retries

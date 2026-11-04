@@ -1,0 +1,24 @@
+# Self-hosted stack: API + static frontend behind one origin (nginx proxies /api).
+#   cp backend/.env.example backend/.env   # add GEMINI_API_KEY
+#   docker compose up --build              # http://localhost:8080
+services:
+  api:
+    build:
+      context: ./backend
+      args: { WITH_OCR: "1", WITH_LIBREOFFICE: "0", WITH_JS: "0" }
+    env_file: ./backend/.env
+    environment:
+      TALKDOX_ENV: production
+      DATA_DIR: /data
+      PORT: "7860"
+      CORS_ORIGINS: http://localhost:8080
+      TRUST_PROXY_HEADERS: "1"        # nginx sets X-Forwarded-For; remove if you expose the API directly
+    volumes: [ "talkdox-data:/data" ]
+    restart: unless-stopped
+  web:
+    build: ./frontend
+    ports: [ "8080:80" ]
+    depends_on: [ api ]
+    restart: unless-stopped
+volumes:
+  talkdox-data:

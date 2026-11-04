@@ -298,3 +298,14 @@ def test_job_cancellation(client, auth, tmp_path):
     assert job["status"] in ("cancelled", "completed")          # cancellation is cooperative; both are valid, never 'stuck'
     if job["status"] == "cancelled":
         assert client.get(f"/api/sources/{r['source_id']}", headers=auth).json()["n_chunks"] == 0
+
+
+def test_client_ip_uses_trusted_hop_not_forgeable_prefix(client):
+    from starlette.requests import Request
+    from app.security import client_ip
+
+    def req(xff):
+        return Request({"type": "http", "headers": [(b"x-forwarded-for", xff.encode())], "client": ("10.0.0.9", 1234)})
+    assert client_ip(req("6.6.6.6, 1.2.3.4"), True, 1) == "1.2.3.4"          # attacker-supplied prefix ignored
+    assert client_ip(req("6.6.6.6, 1.2.3.4, 9.9.9.9"), True, 2) == "1.2.3.4"
+    assert client_ip(req("6.6.6.6"), False, 1) == "10.0.0.9"                  # header ignored unless trusted

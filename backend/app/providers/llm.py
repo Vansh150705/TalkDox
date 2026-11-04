@@ -148,7 +148,8 @@ class GeminiLLM(BaseLLM):
         self._types = types
         self._client = genai.Client(
             api_key=settings.gemini_api_key,
-            http_options=types.HttpOptions(timeout=int(settings.llm_timeout_s * 1000)),
+            http_options=types.HttpOptions(timeout=int(settings.llm_timeout_s * 1000),
+                                           **({"base_url": settings.gemini_base_url} if settings.gemini_base_url else {})),
         )
         self.model = settings.gemini_model
 

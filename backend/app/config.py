@@ -47,6 +47,7 @@ class Settings:
     secret_key: str = ""
     cors_origins: list[str] = field(default_factory=lambda: ["http://localhost:5173"])
     trust_proxy_headers: bool = False  # honour X-Forwarded-For (only behind a trusted proxy)
+    trusted_proxy_hops: int = 1  # proxies in front of the app that append to X-Forwarded-For
 
     # --- model providers -------------------------------------------------
     llm_provider: str = "auto"  # auto | gemini | groq | fake
@@ -54,6 +55,7 @@ class Settings:
     gemini_model: str = "gemini-2.5-flash"
     gemini_fallback_model: str = ""  # explicit, user-visible fallback; never switched silently
     gemini_thinking_budget: int = -1  # -1 = model default, 0 = off
+    gemini_base_url: str = ""  # optional gateway/proxy (also used by protocol tests)
     groq_api_key: str = ""
     groq_model: str = "llama-3.3-70b-versatile"
     embedding_provider: str = "auto"  # auto | gemini | hash
@@ -108,8 +110,6 @@ class Settings:
     retrieval_top_k: int = 8
     retrieval_candidates: int = 40
     min_relevance: float = 0.15
-    rerank_with_llm: bool = False
-    verify_with_llm: bool = False
     multi_query: bool = True
     context_char_budget: int = 24000
 
@@ -120,7 +120,6 @@ class Settings:
     rate_tools_per_hour: int = 40
     max_question_chars: int = 4000
     retention_days: int = 30  # 0 disables automatic purge
-    log_content: bool = False  # never log questions/answers unless explicitly enabled
 
     @property
     def is_prod(self) -> bool:
@@ -169,11 +168,13 @@ def load_settings() -> Settings:
         secret_key=os.getenv("SECRET_KEY", ""),
         cors_origins=_list("CORS_ORIGINS", ",".join(d.cors_origins)),
         trust_proxy_headers=_bool("TRUST_PROXY_HEADERS", d.trust_proxy_headers),
+        trusted_proxy_hops=max(1, _int("TRUSTED_PROXY_HOPS", d.trusted_proxy_hops)),
         llm_provider=os.getenv("LLM_PROVIDER", d.llm_provider).lower(),
         gemini_api_key=os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY", ""),
         gemini_model=os.getenv("GEMINI_MODEL", d.gemini_model),
         gemini_fallback_model=os.getenv("GEMINI_FALLBACK_MODEL", ""),
         gemini_thinking_budget=_int("GEMINI_THINKING_BUDGET", d.gemini_thinking_budget),
+        gemini_base_url=os.getenv("GEMINI_BASE_URL", ""),
         groq_api_key=os.getenv("GROQ_API_KEY", ""),
         groq_model=os.getenv("GROQ_MODEL", d.groq_model),
         embedding_provider=os.getenv("EMBEDDING_PROVIDER", d.embedding_provider).lower(),
@@ -220,8 +221,6 @@ def load_settings() -> Settings:
         retrieval_top_k=_int("RETRIEVAL_TOP_K", d.retrieval_top_k),
         retrieval_candidates=_int("RETRIEVAL_CANDIDATES", d.retrieval_candidates),
         min_relevance=_float("MIN_RELEVANCE", d.min_relevance),
-        rerank_with_llm=_bool("RERANK_WITH_LLM", d.rerank_with_llm),
-        verify_with_llm=_bool("VERIFY_WITH_LLM", d.verify_with_llm),
         multi_query=_bool("MULTI_QUERY", d.multi_query),
         context_char_budget=_int("CONTEXT_CHAR_BUDGET", d.context_char_budget),
         rate_chat_per_min=_int("RATE_CHAT_PER_MIN", d.rate_chat_per_min),
@@ -230,7 +229,6 @@ def load_settings() -> Settings:
         rate_tools_per_hour=_int("RATE_TOOLS_PER_HOUR", d.rate_tools_per_hour),
         max_question_chars=_int("MAX_QUESTION_CHARS", d.max_question_chars),
         retention_days=_int("RETENTION_DAYS", d.retention_days),
-        log_content=_bool("LOG_CONTENT", d.log_content),
     )
     return finalize(s)
 

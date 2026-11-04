@@ -313,7 +313,7 @@ export default function Landing() {
 
       {/* Banner */}
       <div className="top-banner" style={{background:'#0a0a0a',color:'#fff',textAlign:'center',padding:'10px 24px',fontSize:'13px',fontWeight:500}}>
-        🚀 Now supports YouTube videos and any website URL →
+        🚀 Now with multi-page websites, YouTube transcripts and cited answers →
       </div>
 
       {/* Nav */}
@@ -342,7 +342,7 @@ export default function Landing() {
           <div>
             <div style={{display:'inline-flex',alignItems:'center',gap:8,background:'#f8f8f8',border:'1px solid #e2e2e2',borderRadius:100,padding:'6px 14px',fontSize:12,fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',color:'#5a5a5a',marginBottom:24}}>
               <span style={{width:6,height:6,background:'#22c55e',borderRadius:'50%',animation:'pulse 2s infinite',display:'block'}}/>
-              Powered by Gemini 2.5 Flash
+              Powered by Google Gemini
             </div>
             <h1 className="hero-h1" style={{fontFamily:'Syne,sans-serif',fontSize:60,fontWeight:800,lineHeight:1.05,letterSpacing:'-0.04em',marginBottom:20}}>
               Chat with <em style={{fontStyle:'italic',fontWeight:300}}>any</em>
@@ -351,7 +351,7 @@ export default function Landing() {
               <br/>instantly.
             </h1>
 <p className="hero-p" style={{fontSize:18,fontWeight:400,color:'#5a5a5a',lineHeight:1.7,marginBottom:36,maxWidth:480}}>
-  Upload any document (PDF, Word, TXT, Markdown), paste a website URL, or drop a YouTube link. TalkDox reads it, understands it, and lets you have a full AI conversation with it.
+  Upload documents (PDF, Word, PowerPoint, Excel, CSV, text), paste web page links, or add a YouTube video. TalkDox reads the actual content and answers your questions with citations you can check — and tells you when the answer isn’t there.
 </p>
 
             <div className="hero-btns">
@@ -445,7 +445,7 @@ export default function Landing() {
 
         <div className="chars-grid" style={{maxWidth:1200,margin:'0 auto',display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:32}}>
 {[
-  {id:'pdf', tag:'📄 Doc', name:'Paige the Doc Reader', desc:'Upload PDFs, Word docs, text, or markdown files. Paige reads every word and answers your questions instantly.',
+  {id:'pdf', tag:'📄 Doc', name:'Paige the Doc Reader', desc:'Upload PDFs, Word, PowerPoint, Excel, CSV, text or markdown. Paige keeps pages, headings and tables intact and cites the page behind every answer.',
     svg: <svg viewBox="0 0 200 200" fill="none" style={{width:200,height:200,margin:'0 auto 28px'}}>
       <circle cx="100" cy="85" r="38" fill="#fef3c7"/>
       <ellipse cx="100" cy="52" rx="30" ry="14" fill="#1a1a1a"/>
@@ -456,7 +456,7 @@ export default function Landing() {
       <rect x="82" y="168" width="14" height="28" rx="7" fill="#1a1a1a"/><rect x="104" y="168" width="14" height="28" rx="7" fill="#1a1a1a"/>
     </svg>
   },
-  {id:'web', tag:'🌐 Website', name:'Webb the Web Surfer', desc:'Paste any URL. Webb scrapes the entire page and lets you chat with the actual content — articles, docs, anything.', delay:'reveal-delay-2',
+  {id:'web', tag:'🌐 Website', name:'Webb the Web Surfer', desc:'Paste a link — or a whole documentation site. Webb reads the main content (respecting robots.txt, never bypassing logins or paywalls) and cites the exact page.', delay:'reveal-delay-2',
     svg: <svg viewBox="0 0 200 200" fill="none" style={{width:200,height:200,margin:'0 auto 28px'}}>
       <circle cx="100" cy="85" r="38" fill="#dbeafe"/>
       <rect x="72" y="48" width="56" height="16" rx="8" fill="#f59e0b"/>
@@ -496,7 +496,7 @@ export default function Landing() {
       {/* Stats Bar */}
       <div style={{background:'#0a0a0a',padding:'48px 40px'}}>
         <div className="stats-grid">
-          {[['3','Sources Supported'],['9','AI Features'],['3','Agentic Layers'],['∞','Questions Answered']].map(([num,label],i)=>(
+          {[['3','Source types'],['9','Study & work tools'],['✓','Click-through citations'],['0','Original files stored']].map(([num,label],i)=>(
             <div key={label} className={`reveal reveal-delay-${i}`}>
               <div style={{fontFamily:'Syne,sans-serif',fontSize:56,fontWeight:800,color:'#fff',letterSpacing:'-0.04em',lineHeight:1,marginBottom:8}}>{num}</div>
               <div style={{fontSize:13,color:'rgba(255,255,255,0.4)',textTransform:'uppercase',letterSpacing:'0.1em',fontWeight:500}}>{label}</div>
@@ -514,12 +514,12 @@ export default function Landing() {
           </div>
           <div className="features-grid" style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:20}}>
             {[
-              {icon:'💬',title:'Smart Q&A',desc:'Ask anything. Get precise answers grounded in your actual content. 3 Agentic AI layers ensure accuracy.'},
-              {icon:'🧬',title:'Document DNA',desc:'Auto-generated fingerprint on upload — domain, tone, complexity, key themes, and an unusual insight.'},
-              {icon:'🔀',title:'Doc vs Doc',desc:'Upload two sources and compare them side by side. Dual vector retrieval. Colour-coded source attribution.'},
+              {icon:'💬',title:'Smart Q&A',desc:'Ask in plain language. Answers come only from your sources, every claim is cited, and unsupported statements are flagged.'},
+              {icon:'🧬',title:'Document DNA',desc:'A profile of any source — domain, tone, key themes and entities — plus reading time computed from the text.'},
+              {icon:'🔀',title:'Doc vs Doc',desc:'Select two or more sources and compare them. Every point is attributed to the source it came from.'},
               {icon:'🕐',title:'Timeline Extractor',desc:'One click extracts every date, deadline, and milestone into a colour-coded visual timeline.'},
               {icon:'🃏',title:'Smart Flashcards',desc:'Generate study flashcards from any document, website, or YouTube video. Filter by difficulty level.'},
-              {icon:'🛠',title:'5 Automation Tools',desc:'Summary, Quiz, Email, Contradiction Finder, Action Items. One click each. Instant output.'},
+              {icon:'🛠',title:'Study & work tools',desc:'Summary, quiz, email draft, contradictions, action items — all citing their source passages. One click each. Instant output.'},
             ].map((f,i)=>(
              <div key={f.title} className={`feat-card reveal reveal-delay-${(i%3)+1}`}
                 onMouseEnter={e => {
@@ -558,8 +558,8 @@ export default function Landing() {
           <div className="steps-grid" style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:0,position:'relative'}}>
             <div className="step-line" style={{position:'absolute',top:56,left:'calc(100%/6)',right:'calc(100%/6)',height:'1.5px',background:'linear-gradient(to right, #e2e2e2, #0a0a0a, #e2e2e2)'}}/>
             {[
-              {num:'01',title:'Connect Your Source',desc:'Upload any document, paste a website URL, or drop a YouTube link. TalkDox handles all sources instantly.'},
-              {num:'02',title:'AI Indexes & Understands',desc:'Content is chunked, embedded via Gemini, and indexed in FAISS. Your Agentic RAG pipeline is ready.'},
+              {num:'01',title:'Connect Your Source',desc:'Upload files, paste web links or add a YouTube video. Large sources run in the background with live progress.'},
+              {num:'02',title:'AI Indexes & Understands',desc:'Content is split along its real structure, embedded, and indexed for hybrid keyword + semantic search. Answers are checked against the passages they cite.'},
               {num:'03',title:'Start Chatting',desc:'Ask questions, extract timelines, generate flashcards, compare documents — all in one place.'},
             ].map((step,i)=>(
               <div key={step.num} className={`step reveal reveal-delay-${i+1}`} style={{textAlign:'center',position:'relative',zIndex:1,padding:'0 24px'}}>
@@ -585,7 +585,7 @@ export default function Landing() {
               Way more than<br/><em style={{fontStyle:'italic',fontWeight:300,color:'rgba(255,255,255,0.5)'}}>just a chatbot.</em>
             </h2>
             <p className="reveal reveal-delay-1" style={{color:'rgba(255,255,255,0.5)',fontSize:17,maxWidth:580,margin:'0 auto'}}>
-              From Agentic RAG and adaptive AI personas to timeline extraction and flashcards — TalkDox is a full AI intelligence layer for any content.
+              From cited Q&A and multi-source comparison to timelines and flashcards — TalkDox turns the sources you give it into something you can trust and study.
             </p>
           </div>
 
@@ -593,15 +593,15 @@ export default function Landing() {
             {[
               {icon:'💬',title:'Smart Q&A',desc:'Ask anything, get answers grounded in your source'},
               {icon:'🧬',title:'Document DNA',desc:'Auto-profile any source — domain, tone, complexity'},
-              {icon:'🔀',title:'Doc vs Doc Compare',desc:'Dual vector retrieval with colour-coded sources'},
+              {icon:'🔀',title:'Doc vs Doc Compare',desc:'Compare sources with per-source citations'},
               {icon:'🕐',title:'Timeline Extractor',desc:'Visualise every date, deadline and milestone'},
               {icon:'🃏',title:'Smart Flashcards',desc:'Auto-generate study cards with difficulty levels'},
-              {icon:'🛠',title:'5 Automation Tools',desc:'Summary, Quiz, Email, Contradictions, Actions'},
-              {icon:'🤖',title:'3 Agentic Layers',desc:'Clarification, Self-Reflection, Confidence'},
+              {icon:'🛠',title:'Study & work tools',desc:'Summary, quiz, email, contradictions, actions'},
+              {icon:'🤖',title:'Evidence Checks',desc:'Citation verification, support checks, honest “not found”'},
               {icon:'📊',title:'Session Analytics',desc:'Track confidence trends and keyword patterns'},
               {icon:'⚖️',title:'AI Personas',desc:'Chat as a Lawyer, Doctor, Teacher, or Analyst'},
-              {icon:'🎯',title:'Response Modes',desc:'ELI5, Executive Brief, or Devil\'s Advocate'},
-              {icon:'🌐',title:'Multilingual',desc:'Auto-detects language, responds in same one'},
+              {icon:'🎯',title:'Response Modes',desc:'Simple, executive brief, or both-sides answers'},
+              {icon:'🌐',title:'Multilingual',desc:'Replies in the language you ask in'},
               {icon:'🎙',title:'Voice Input',desc:'Speak your questions using browser speech API'},
             ].map((f) => (
               <div key={f.title} className="cta-feat-card">
@@ -620,7 +620,7 @@ export default function Landing() {
           <div className="footer-grid" style={{display:'grid',gridTemplateColumns:'2fr 1fr 1fr',gap:40,marginBottom:48}}>
             <div>
               <div style={{fontFamily:'Syne,sans-serif',fontWeight:800,fontSize:22,marginBottom:12}}>TalkDox 🧠</div>
-              <p style={{fontSize:14,color:'#5a5a5a',lineHeight:1.6,maxWidth:300}}>Chat with any document, website, or YouTube video — powered by Google Gemini 2.5 Flash.</p>
+              <p style={{fontSize:14,color:'#5a5a5a',lineHeight:1.6,maxWidth:300}}>Chat with your documents, websites and YouTube videos — powered by Google Gemini.</p>
             </div>
 
             <div>

@@ -1,144 +1,55 @@
 # 🧠 TalkDox
 
-> Chat with any **document**, **website**, or **YouTube video** - powered by Google Gemini 2.5 Flash.  
-> Agentic RAG with 12+ AI features in one unified intelligence layer.
+Chat with your **documents**, **websites** and **YouTube videos**. Answers are written only from your sources, every
+claim carries a citation you can open (page, slide, sheet rows, URL section or the exact video moment), and when the
+answer isn't in the sources TalkDox says so instead of guessing.
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-talkdox--ai.vercel.app-black?style=for-the-badge)](https://talkdox-ai.vercel.app)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[Live demo](https://talkdox-ai.vercel.app) · [Architecture](docs/ARCHITECTURE.md) · [Security & privacy](docs/SECURITY.md) · [Deployment](docs/DEPLOYMENT.md) · [Evaluation](docs/EVALUATION.md) · [Testing](docs/TESTING.md) · [API](docs/API.md)
 
----
+> **Status:** the pipeline, API and UI are covered by 256 automated backend tests and a browser smoke test, but the
+> live Gemini, YouTube and public-web integrations could not be exercised in the build environment. Read
+> [docs/TESTING.md](docs/TESTING.md) ("What is NOT verified") and [docs/EVALUATION.md](docs/EVALUATION.md) before a public launch.
 
-## 🎯 What is TalkDox?
+## What it does
+| Source | Support | Honest limits |
+|---|---|---|
+| **Documents** | PDF (text, tables, outline, repeated header/footer removal; scanned pages via OCR), DOCX, PPTX, XLSX/CSV/TSV (tables + computed column statistics), TXT/MD/HTML/JSON; legacy DOC/PPT/XLS/RTF/ODT if LibreOffice is installed | 25 MB / 1000 pages by default; password-protected, corrupt, empty or unsupported files fail with a specific reason; charts/diagrams inside images aren't read; Word has no page numbers (cites section headings) |
+| **Websites** | main-content extraction (no nav/ads), canonical URLs, robots.txt, sitemap discovery, multi-page crawl with depth / page / path limits and de-duplication, PDF links, optional sandboxed JS rendering, SSRF-proof fetching | no logins, paywalls or CAPTCHAs (by design); sites that block bots or need JS (when rendering is off) are reported, not faked |
+| **YouTube** | video, Shorts, playlists; manual-first captions in any language, chapters, exact timestamps with clickable deep links; fallbacks: Supadata → yt-dlp → (opt-in) AI-generated transcript, clearly labelled | transcript only — it does **not** see the picture; no captions + no fallback ⇒ explained failure; YouTube may block datacenter IPs (see DEPLOYMENT.md) |
 
-TalkDox transforms any document, webpage, or video into an intelligent conversation partner. Upload a PDF, Word doc, text file, paste a URL, or drop a YouTube link - TalkDox reads, understands, and lets you have a full AI conversation with it.
+**Trustworthy answers:** hybrid retrieval (semantic + BM25) → relevance gates → structured, citation-bound generation → deterministic verification of ids, quotes, numbers and per-sentence support → withheld (not guessed) when nothing can be verified. The UI shows evidence strength, flagged statements, the verified quote and a source viewer with the exact extracted text the AI saw.
 
-Unlike basic chatbots, TalkDox uses a **3-layer Agentic RAG pipeline** with self-reflection and confidence scoring, plus 12+ built-in AI tools.
+**Study & work tools** (all cite their passages and report how much of the source they read): summary (map-reduce over the *whole* source), source profile, flashcards, quiz, timeline, action items, contradictions, email draft, multi-source comparison. Plus chat modes/perspectives, history & export, voice input, analytics.
 
----
+**Workspace model:** every browser gets a private, token-protected workspace (no accounts); sources process in the background with real progress, partial results and a per-source extraction report.
 
-## ✨ Features
-
-### 📂 3 Source Types
-- **📄 Document Reader** - PDF, Word (.docx), Text (.txt), Markdown (.md) — research papers, contracts, resumes, reports
-- **🌐 Web Surfer** - Any website URL, with rotated user agents to bypass basic bot detection
-- **▶️ YouTube Extractor** - Auto-transcribes any video with captions
-
-### 🤖 12 AI Capabilities
-
-| Feature | What It Does |
-|---------|-------------|
-| 💬 Smart Q&A | Streaming responses grounded with source citations |
-| 🧬 Document DNA | Auto-profile: domain, tone, complexity, themes |
-| 🔀 Doc vs Doc Compare | Side-by-side compare with colour-coded sources |
-| 🕐 Timeline Extractor | Auto-extract dates and milestones |
-| 🃏 3D Flip Flashcards | Realistic flip-card study mode with difficulty filters |
-| 🛠 5 Automation Tools | Summary, Quiz, Email, Contradictions, Actions |
-| 🤖 3 Agentic Layers | Clarification → Self-Reflection → Confidence |
-| 📊 Session Analytics | Track confidence trends and patterns |
-| ⚖️ AI Personas | Lawyer, Doctor, Teacher, Analyst, Journalist |
-| 🎯 Response Modes | ELI5, Executive Brief, Devil's Advocate |
-| 🌐 Multilingual | Auto-detects language, responds in kind |
-| 🎙 Voice Input | Hands-free via Web Speech API |
-
----
-
-## 🧠 Agentic RAG Pipeline
-
+## Quick start
+```bash
+# backend
+cd backend && python -m venv .venv && . .venv/bin/activate && pip install -r requirements-dev.txt
+cp .env.example .env              # set GEMINI_API_KEY
+uvicorn main:app --reload --port 8000
+# frontend (another terminal)
+cd frontend && npm ci && npm run dev        # http://localhost:5173
 ```
-Query → Clarification Layer → Retrieval (FAISS) → Self-Reflection → Confidence Score → Response
+No key? `python backend/scripts/run_offline_demo.py` runs the full stack with test doubles (UI shows a banner; answers are extracted sentences, not AI output).
+Docker: `cp backend/.env.example backend/.env && docker compose up --build` → <http://localhost:8080>.
+Tests: `cd backend && python -m pytest tests -q` · `cd frontend && npm run lint && npm run build`.
+
+## Model & data
+Default model `gemini-2.5-flash` (configurable via `GEMINI_MODEL`; check <https://ai.google.dev/gemini-api/docs/deprecations> — the server reports in `/api/health/ready` whether it resolves, and never switches models silently) and `gemini-embedding-001` embeddings. Your question and the retrieved passages are sent to Google; the list of what leaves your server is in [docs/SECURITY.md](docs/SECURITY.md) and in the app (*Insights → Privacy & data*). Original uploads are not stored; idle workspaces are deleted after `RETENTION_DAYS`.
+
+## Project layout
 ```
-
-1. **Clarification** - Detects ambiguous queries and asks for specifics
-2. **Retrieval** - Embeds + searches FAISS for top-k relevant chunks
-3. **Self-Reflection** - Critiques its own answer and refines if needed
-4. **Confidence** - Multi-signal scoring (retrieval depth + content quality + keyword overlap) with 0–100% transparency
-
----
-
-## 🛠 Tech Stack
-
-**Frontend** • React 18 (Vite) • DM Sans + Syne • Web Speech API • 3D CSS Transforms • Vercel  
-**Backend** • Python 3.12 • FastAPI • LangChain • FAISS • HuggingFace Spaces (Docker)  
-**AI** • Google Gemini 2.5 Flash • gemini-embedding-001  
-**Integrations** • Supadata API (YouTube) • BeautifulSoup (web scraping) • PyPDF • python-docx
-
----
-
-## 📊 Engineering Highlights
-
-- ✅ Streaming responses (word-by-word) with blinking cursor for premium UX
-- ✅ Async background processing for Document DNA generation
-- ✅ Multi-signal confidence scoring (not just keyword overlap)
-- ✅ Rotated user agents + browser-like headers for resilient web scraping
-- ✅ File size & page count validations to prevent server crashes
-- ✅ Friendly error mapping for HTTP status codes (403/404/429/timeout)
-- ✅ Mobile-first responsive design with className-based breakpoints
-- ✅ 3D CSS transforms for realistic flashcard flip animations
-- ✅ Premium loading screen for HuggingFace cold starts
-
----
-
-## 🧪 Limits
-
-| Source | Comfortable | Maximum |
-|--------|-------------|---------|
-| **Document** | 1-100 pages | 300 pages / 20 MB |
-| **Website** | Any article/blog | 50,000-word pages |
-| **YouTube** | 5-60 min | Up to 3-4 hour videos |
-
-Limits are enforced server-side with friendly error messages — no crashes on oversized uploads.
-
----
-
-## 📁 Project Structure
-
-```
-TalkDox/
-├── backend/
-│   ├── main.py              # FastAPI entry point
-│   ├── utils/
-│   │   ├── agents.py        # Agentic RAG layers
-│   │   ├── ai_helpers.py    # Gemini calls, embeddings
-│   │   ├── pdf_processor.py # Document/web/YouTube ingestion
-│   │   └── styles.py        # Response formatting
-│   ├── Dockerfile
-│   └── requirements.txt
-├── frontend/
-│   ├── src/
-│   │   ├── pages/
-│   │   │   ├── Landing.jsx  # Landing page
-│   │   │   ├── Upload.jsx   # Source upload
-│   │   │   └── Chat.jsx     # Chat interface
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── vercel.json
-│   └── package.json
-└── README.md
+backend/app/      config · db (SQLite+FTS5) · net (SSRF guard) · security · providers/ (gemini, groq, ocr, test doubles)
+                  ingest/ (documents, htmlextract, web crawler, jsrender, youtube, chunking, pipeline) · rag/ (router, retrieval, answer, citations, prompts, tools) · api/routes
+backend/tests/    ~256 tests incl. SSRF, security, Gemini-protocol stub and the labelled RAG evaluation (tests/eval)
+backend/scripts/  run_offline_demo.py · eval_live.py
+frontend/src/     pages (Landing, Upload, Chat) · components (AddSources, SourcesPanel, ChatPane, StudyTools, Citations viewer, Insights) · context/ · api.js
+docs/             architecture, security/privacy, deployment, evaluation, testing, API
 ```
 
----
+## What changed from v1 (honest summary)
+v1 kept one global in-memory document for *all* visitors, answered with Llama via Groq while the README claimed Gemini, analysed only the first 4–6k characters for tools, used a fixed-formula "confidence", faked upload progress with timers, accepted any URL (SSRF), and removed nothing it couldn't verify. v2 replaces those with isolated persistent workspaces, evidence-bound answers, whole-source tools, real jobs and a safe fetcher. Details in the pull-request description / docs.
 
-## 👨‍💻 Author
-
-**Vansh Mahajan**
-
-- 💼 LinkedIn: https://www.linkedin.com/in/vansh-mahajan-napv/
-- 📧 Email: vansh150705@gmail.com
-- 🐙 GitHub: https://github.com/Vansh150705
-
----
-
-## 📄 License
-
-MIT License - free to use, modify, and share.
-
----
-
-## 🌟 Show Your Support
-
-If TalkDox helped you:
-- ⭐ Star this repo
-- 🔀 Share with friends
-- 🐛 Report bugs in Issues
-
-Built with 💙 by Vansh Mahajan
+Built by **Vansh Mahajan** · MIT License

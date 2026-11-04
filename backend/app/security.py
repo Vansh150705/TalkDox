@@ -59,11 +59,13 @@ class RateLimiter:
                     del self._hits[k]
 
 
-def client_ip(request: Request, trust_proxy: bool) -> str:
+def client_ip(request: Request, trust_proxy: bool, hops: int = 1) -> str:
+    """With TRUST_PROXY_HEADERS the client is the entry `hops` from the END of X-Forwarded-For: each trusted proxy appends
+    the address it saw, so the left-most entries (which a client can forge) are ignored."""
     if trust_proxy:
-        xff = request.headers.get("x-forwarded-for")
+        xff = [p.strip() for p in request.headers.get("x-forwarded-for", "").split(",") if p.strip()]
         if xff:
-            return xff.split(",")[0].strip()
+            return xff[-hops] if len(xff) >= hops else xff[0]
     return request.client.host if request.client else "unknown"
 
 

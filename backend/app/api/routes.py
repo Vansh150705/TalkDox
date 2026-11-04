@@ -127,7 +127,11 @@ def create_router(st: AppState) -> APIRouter:
 
     @r.get("/config")
     def config():
-        from ..config import config_problems
+        problems = []
+        if st.llm is None:
+            problems.append("No AI model is configured: set GEMINI_API_KEY (or GROQ_API_KEY). Chat and AI tools are disabled.")
+        if st.embedder is None:
+            problems.append("No embedding provider is configured: set GEMINI_API_KEY. Adding sources is disabled.")
         return {
             "formats": sorted(SUPPORTED.keys()), "formats_label": SUPPORTED_LABEL, "tools": TOOLS,
             "limits": s.public_dict(),
@@ -136,14 +140,15 @@ def create_router(st: AppState) -> APIRouter:
                          "supadata": bool(s.supadata_api_key)},
             "model": {"provider": st.llm.provider if st.llm else None, "name": st.llm.model if st.llm else None,
                       "embedding": st.embedder.model if st.embedder else None},
-            "problems": config_problems(s),
+            "problems": problems,
+            "demo": bool(st.llm and st.llm.provider == "fake"),
             "privacy": {"sent_to": _providers(st), "retention_days": s.retention_days},
         }
 
     # ------------------------------------------------------------------ workspaces
     @r.post("/workspaces")
     def create_workspace(request: Request):
-        limit("ws:" + client_ip(request, s.trust_proxy_headers), s.rate_workspace_create_per_hour, 3600)
+        limit("ws:" + client_ip(request, s.trust_proxy_headers, s.trusted_proxy_hops), s.rate_workspace_create_per_hour, 3600)
         wid = db.create_workspace()
         return {"workspace_id": wid, "token": sign_workspace(s.secret_key, wid)}
 
@@ -212,16 +217,24 @@ def create_router(st: AppState) -> APIRouter:
         limit("ing:" + wid, s.rate_ingest_per_hour, 3600)
         return {"results": st.ingest.submit_youtube(wid, body.url, [l for l in body.langs if re.fullmatch(r"[A-Za-z-]{2,10}", l)])}
 
+    def with_job(src: dict, wid: str) -> dict:
+        out = public_source(src)
+        if src["status"] in ("queued", "processing"):
+            j = db.one("SELECT * FROM jobs WHERE source_id=? AND workspace_id=? ORDER BY created_at DESC LIMIT 1", (src["id"], wid))
+            if j:
+                out["job"] = public_job(dict(j))
+        return out
+
     @r.get("/sources")
     def list_sources(wid: str = Depends(workspace)):
-        return {"sources": [public_source(x) for x in db.list_sources(wid)]}
+        return {"sources": [with_job(x, wid) for x in db.list_sources(wid)]}
 
     @r.get("/sources/{sid}")
     def get_source(sid: str, wid: str = Depends(workspace)):
         src = db.get_source(wid, sid)
         if not src:
             raise AppError("Source not found.", code="not_found", status=404)
-        return public_source(src)
+        return with_job(src, wid)
 
     @r.delete("/sources/{sid}")
     def delete_source(sid: str, wid: str = Depends(workspace)):
