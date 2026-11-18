@@ -243,14 +243,18 @@ def test_legacy_doc_via_libreoffice(client, auth, tmp_path):
 
 
 def test_large_pdf_processes_with_bounded_memory_and_progress(client, auth, tmp_path):
-    import resource
+    try:
+        import resource                              # Unix only; the memory check is skipped elsewhere (e.g. Windows)
+    except ImportError:
+        resource = None
     pages = [[f"Section {i}", f"Page {i} discusses subject{i} and records the figure {i * 7}."] for i in range(150)]
     p = make_pdf(tmp_path / "big.pdf", pages)
-    before = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    before = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss if resource else 0
     sid, job = ingest_file(client, auth, p)
-    after = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    after = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss if resource else 0
     assert job["status"] == "completed"
     s = src(client, auth, sid)
     assert s["n_pages"] == 150 and s["diagnostics"]["pages_with_text"] == 150
-    assert (after - before) / 1024 < 400            # MB growth stays modest for a 150 page PDF
+    if resource:
+        assert (after - before) / 1024 < 400        # MB growth stays modest for a 150 page PDF
     assert any("subject149" in c["text"] for c in content(client, auth, sid, page=150)["chunks"])

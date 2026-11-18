@@ -3,12 +3,13 @@
 import { createRequire } from 'node:module'
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 const require = createRequire(import.meta.url)
 const { chromium } = require('playwright')
 
 const base = process.argv[2] || 'http://127.0.0.1:5173'
 const shots = process.argv[3] || ''
-const fixtures = path.resolve(process.argv[4] || path.join(path.dirname(new URL(import.meta.url).pathname), 'fixtures'))
+const fixtures = path.resolve(process.argv[4] || path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures'))
 let failures = 0
 const check = (ok, msg) => { console.log(`${ok ? 'PASS' : 'FAIL'}  ${msg}`); if (!ok) failures++ }
 const shot = async (page, name) => { if (shots) await page.screenshot({ path: path.join(shots, name + '.png') }) }
