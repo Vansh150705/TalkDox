@@ -23,3 +23,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.swp
+# Local tooling artifacts
+.playwright-mcp/
+qa-screenshots/
