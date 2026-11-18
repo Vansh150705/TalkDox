@@ -143,6 +143,19 @@ def test_auth_and_bad_request_not_retried(gs, stub):
     assert e.value.code == "provider_auth" and len(posts(stub)) == 1 and "API key not valid" not in e.value.message
 
 
+def test_depleted_credits_402_gives_actionable_billing_error_not_retried(gs, stub):
+    """Regression: a real Gemini 402 (prepaid credits depleted) used to surface as a vague 'provider rejected the request'."""
+    body = {"error": {"code": 402, "message": "Your prepayment credits are depleted.", "status": "RESOURCE_EXHAUSTED"}}
+    stub.script = [(402, body)]
+    with pytest.raises(ProviderError) as e:
+        GeminiLLM(gs).generate("hi")
+    assert e.value.code == "provider_billing" and "credits" in e.value.message and len(posts(stub)) == 1
+    stub.script = [(402, body)]
+    with pytest.raises(ProviderError) as e2:
+        GeminiEmbedder(gs).embed_documents(["x"])
+    assert e2.value.code == "provider_billing"
+
+
 def test_circuit_breaker_opens_after_repeated_failures(gs, stub, monkeypatch):
     monkeypatch.setattr("time.sleep", lambda s: None)
     gs.llm_max_retries = 0

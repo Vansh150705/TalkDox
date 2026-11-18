@@ -129,6 +129,10 @@ def _status_to_error(status: int | None, msg: str) -> ProviderError:
     if status in (401, 403):
         return ProviderError("The AI provider rejected the server's credentials. Check the API key configuration.",
                              code="provider_auth", status=502)
+    if status == 402:
+        return ProviderError("The AI provider account is out of credits or has a billing problem. "
+                             "Add credits or enable billing for the API key, then try again.",
+                             code="provider_billing", status=502, detail={"upstream": msg[:200]})
     if status == 404:
         return ProviderError("The configured AI model is not available. Check GEMINI_MODEL.",
                              code="model_not_found", status=502, detail={"upstream": msg[:200]})
