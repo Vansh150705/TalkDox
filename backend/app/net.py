@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import ipaddress
 import logging
+import re
 import socket
 import time
 from dataclasses import dataclass, field
@@ -31,6 +32,8 @@ from .errors import AppError, UnsafeURLError
 log = logging.getLogger("talkdox.net")
 
 _BLOCKED_HOST_SUFFIXES = (".localhost", ".local", ".internal", ".lan", ".home.arpa", ".intranet", ".corp", ".private")
+# Hostnames made only of decimal / hex / octal numeric labels ("2130706433", "0x7f000001", "127.1", "0177.0.0.1").
+_NUMERIC_HOST = re.compile(r"^(?:0x[0-9a-f]+|\d+)(?:\.(?:0x[0-9a-f]+|\d+))*$", re.IGNORECASE)
 _BLOCKED_HOSTS = {"localhost", "metadata", "metadata.google.internal", "instance-data"}
 _TRACKING = {"fbclid", "gclid", "dclid", "msclkid", "mc_cid", "mc_eid", "igshid", "yclid", "_hsenc", "_hsmi", "ref_src"}
 _REDIRECT = {301, 302, 303, 307, 308}
@@ -173,6 +176,13 @@ class SafeFetcher:
         except ValueError:
             pass
         ips: list[str] = []
+        if literal is None and _NUMERIC_HOST.match(host):
+            # Integer / hex / octal / short-dotted IPv4 spellings (2130706433, 0x7f000001, 017700000001, 127.1).
+            # Different OS resolvers interpret these differently (Linux: loopback; some Windows/ISP resolvers:
+            # a public address), and no real public hostname is made only of numeric labels. Refuse outright
+            # instead of depending on the platform's resolver.
+            raise UnsafeURLError("Numeric IP address shortcuts aren't allowed. Use the site's normal address.",
+                                 code="blocked_url")
         if literal is not None:
             ips = [str(literal)]
         else:
