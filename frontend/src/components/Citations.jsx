@@ -24,14 +24,22 @@ export function ConfidenceBadge({ conf }) {
   )
 }
 
+// Flags that mean "part of this answer is not backed by the cited text" get a prominent, pre-expanded warning;
+// softer flags (missing citation, partial support) stay behind the collapsed link.
+const SERIOUS_FLAGS = new Set(['numeric_mismatch', 'unsupported_claim'])
+
 export function Flags({ flags }) {
   const shown = flags || []
-  const [open, setOpen] = useState(false)
+  const serious = shown.some(f => SERIOUS_FLAGS.has(f.type))
+  const [open, setOpen] = useState(serious)
   if (!shown.length) return null
+  const numeric = shown.some(f => f.type === 'numeric_mismatch')
   return (
-    <div className="flags" role="note">
+    <div className={`flags${serious ? ' flags-serious' : ''}`} role={serious ? 'alert' : 'note'}>
       <button type="button" className="link-btn" onClick={() => setOpen(o => !o)} aria-expanded={open}>
-        ⚠ {shown.length} check{shown.length > 1 ? 's' : ''} flagged on this answer {open ? '▲' : '▼'}
+        {serious
+          ? `⚠ Please verify: ${numeric ? 'a number in this answer was not found in the cited passages' : 'part of this answer is not supported by the cited passages'}`
+          : `⚠ ${shown.length} check${shown.length > 1 ? 's' : ''} flagged on this answer`} {open ? '▲' : '▼'}
       </button>
       {open && (
         <ul>
