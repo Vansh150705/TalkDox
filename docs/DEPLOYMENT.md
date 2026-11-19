@@ -38,8 +38,8 @@ See `backend/.env.example` for the annotated list. Essentials:
 | Variable | Default | Purpose |
 |---|---|---|
 | `GEMINI_API_KEY` | – | Required for answers **and** embeddings |
-| `GEMINI_MODEL` | `gemini-2.5-flash` | Check <https://ai.google.dev/gemini-api/docs/deprecations>: this model's availability is time-limited; `/api/health/ready` reports whether the configured model resolves. |
-| `GEMINI_FALLBACK_MODEL` | – | Optional, used only on 404 and reported in responses |
+| `GEMINI_MODEL` | `gemini-3.5-flash` | Check <https://ai.google.dev/gemini-api/docs/deprecations>: model availability is time-limited (`gemini-2.5-*` is already closed to new API keys); `/api/health/ready` reports whether the configured model resolves. |
+| `GEMINI_FALLBACK_MODEL` | `gemini-3.1-flash-lite` | Used only on 404 / 429 / 5xx / timeout of the primary and reported in every response; set it empty to disable. The lite model is faster and more available but less accurate on multi-row calculations. |
 | `EMBEDDING_MODEL` / `EMBEDDING_DIM` | `gemini-embedding-001` / 768 | Changing either requires re-adding sources (vectors are not comparable) |
 | `TALKDOX_ENV` | `development` | `production` enables strict checks (no `*` CORS, no private-network fetching) and HSTS |
 | `CORS_ORIGINS` | `http://localhost:5173` | Comma-separated explicit origins |

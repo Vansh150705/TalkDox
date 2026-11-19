@@ -40,7 +40,7 @@ Errors always look like `{"error": "<safe message>", "code": "<stable_code>", "d
   "confidence": {"level": "high|medium|low|none", "score": 0-100, "factors": {…}},   // evidence strength, not a probability
   "followups": ["…"], "related": [/* closest passages when nothing could be verified */],
   "scope_note": "Scoped to the source(s) named in your question.",
-  "model": {"provider": "gemini", "name": "gemini-2.5-flash"},   // the model that actually answered
+  "model": {"provider": "gemini", "name": "gemini-3.5-flash"},   // the model that actually answered
   "trace": [{"step": "route|rewrite|retrieve|term_check|generate|verify", "ms": 12, …}],
   "message_id": "…", "conversation_id": "…"
 }

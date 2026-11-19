@@ -168,20 +168,28 @@ class GeminiLLM(BaseLLM):
         budget = self.s.gemini_thinking_budget if thinking else 0
         if budget >= 0 and "2.5" in self.model:
             cfg_kwargs["thinking_config"] = t.ThinkingConfig(thinking_budget=budget)
-        models = [self.model] + ([self.s.gemini_fallback_model] if self.s.gemini_fallback_model else [])
+        fb = self.s.gemini_fallback_model
+        models = [self.model] + ([fb] if fb and fb != self.model else [])
         last_err: Exception | None = None
         for idx, model in enumerate(models):
+            has_next = idx + 1 < len(models)
             try:
                 resp = self._client.models.generate_content(
                     model=model, contents=prompt, config=t.GenerateContentConfig(**cfg_kwargs))
             except gerr.APIError as e:
                 status = getattr(e, "code", None)
-                if status == 404 and idx + 1 < len(models):
-                    log.error("Primary model %s unavailable; using configured fallback %s", model, models[idx + 1])
+                # The fallback covers "this model can't serve us right now": retired (404), quota (429) or overloaded
+                # (5xx). Auth, billing and malformed-request errors would fail identically on any model.
+                if has_next and (status in (404, 429) or (status or 0) >= 500):
+                    log.warning("Model %s failed (HTTP %s); using configured fallback %s", model, status, models[idx + 1])
                     last_err = e
                     continue
                 raise _status_to_error(status, str(e)) from e
             except (httpx.TimeoutException, httpx.TransportError) as e:
+                if has_next:
+                    log.warning("Model %s timed out; using configured fallback %s", model, models[idx + 1])
+                    last_err = e
+                    continue
                 raise ProviderUnavailable("The AI provider timed out.", code="provider_timeout") from e
             text = getattr(resp, "text", None) or ""
             if not text:

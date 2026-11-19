@@ -37,7 +37,7 @@ Docker: `cp backend/.env.example backend/.env && docker compose up --build` → 
 Tests: `cd backend && python -m pytest tests -q` · `cd frontend && npm run lint && npm run build`.
 
 ## Model & data
-Default model `gemini-2.5-flash` (configurable via `GEMINI_MODEL`; check <https://ai.google.dev/gemini-api/docs/deprecations> — the server reports in `/api/health/ready` whether it resolves, and never switches models silently) and `gemini-embedding-001` embeddings. Your question and the retrieved passages are sent to Google; the list of what leaves your server is in [docs/SECURITY.md](docs/SECURITY.md) and in the app (*Insights → Privacy & data*). Original uploads are not stored; idle workspaces are deleted after `RETENTION_DAYS`.
+Default model `gemini-3.5-flash` with `gemini-3.1-flash-lite` as an explicit fallback when the primary is overloaded or unavailable (configurable via `GEMINI_MODEL` / `GEMINI_FALLBACK_MODEL`; check <https://ai.google.dev/gemini-api/docs/deprecations> — `/api/health/ready` reports whether the primary resolves, and the model that answered is shown with every response, never switched silently) and `gemini-embedding-001` embeddings. Your question and the retrieved passages are sent to Google; the list of what leaves your server is in [docs/SECURITY.md](docs/SECURITY.md) and in the app (*Insights → Privacy & data*). Original uploads are not stored; idle workspaces are deleted after `RETENTION_DAYS`.
 
 ## Project layout
 ```

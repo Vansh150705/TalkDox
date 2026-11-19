@@ -52,8 +52,10 @@ class Settings:
     # --- model providers -------------------------------------------------
     llm_provider: str = "auto"  # auto | gemini | groq | fake
     gemini_api_key: str = ""
-    gemini_model: str = "gemini-2.5-flash"
-    gemini_fallback_model: str = ""  # explicit, user-visible fallback; never switched silently
+    gemini_model: str = "gemini-3.5-flash"
+    # Used only when the primary model is retired (404), rate limited (429), overloaded (5xx) or times out. Always
+    # reported in the response ("model" field), never silent. Set GEMINI_FALLBACK_MODEL= (empty) to disable.
+    gemini_fallback_model: str = "gemini-3.1-flash-lite"
     gemini_thinking_budget: int = -1  # -1 = model default, 0 = off
     gemini_base_url: str = ""  # optional gateway/proxy (also used by protocol tests)
     groq_api_key: str = ""
@@ -172,7 +174,7 @@ def load_settings() -> Settings:
         llm_provider=os.getenv("LLM_PROVIDER", d.llm_provider).lower(),
         gemini_api_key=os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY", ""),
         gemini_model=os.getenv("GEMINI_MODEL", d.gemini_model),
-        gemini_fallback_model=os.getenv("GEMINI_FALLBACK_MODEL", ""),
+        gemini_fallback_model=os.getenv("GEMINI_FALLBACK_MODEL", d.gemini_fallback_model).strip(),
         gemini_thinking_budget=_int("GEMINI_THINKING_BUDGET", d.gemini_thinking_budget),
         gemini_base_url=os.getenv("GEMINI_BASE_URL", ""),
         groq_api_key=os.getenv("GROQ_API_KEY", ""),

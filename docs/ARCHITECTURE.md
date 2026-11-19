@@ -45,7 +45,7 @@ Browser (React/Vite)                       FastAPI (uvicorn), one process
 SQLite in WAL mode with versioned migrations (`app/db.py`). Every user-content table carries `workspace_id`; DB helpers require it. Vectors are float32 BLOBs; an LRU cache (256 MB) keeps per-source matrices in memory. `embedding_cache` makes re-indexing and duplicate text free and is pruned when sources are deleted or refreshed.
 
 ## Providers (`app/providers`)
-* `GeminiLLM` – `GEMINI_MODEL` (default `gemini-2.5-flash`). **Never switched silently**: an optional `GEMINI_FALLBACK_MODEL` is used only on a 404 and the answering model is reported in every response. `/api/health/ready` checks the configured model. Retry with backoff on 429/5xx/timeouts, concurrency cap, circuit breaker.
+* `GeminiLLM` – `GEMINI_MODEL` (default `gemini-3.5-flash`). **Never switched silently**: `GEMINI_FALLBACK_MODEL` (default `gemini-3.1-flash-lite`, empty disables it) is used only when the primary model is retired (404), rate limited (429), overloaded (5xx) or times out, and the model that actually answered is reported in every response. Auth, billing and bad-request errors are never retried on another model. `/api/health/ready` checks the configured model. Retry with backoff on 429/5xx/timeouts, concurrency cap, circuit breaker.
 * `GeminiEmbedder` – `gemini-embedding-001`, 768 dims (Matryoshka truncation), L2-normalised, task types `RETRIEVAL_DOCUMENT` / `RETRIEVAL_QUERY`.
 * `GroqLLM` – optional alternative chat provider (`LLM_PROVIDER=groq`).
 * `FakeLLM`, `HashEmbedder`, `FakeOCR` – **test doubles only**; never selected automatically.

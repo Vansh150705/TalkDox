@@ -86,7 +86,7 @@ def stub():
 @pytest.fixture()
 def gs(tmp_path, stub):
     return finalize(Settings(env="test", data_dir=tmp_path / "d", gemini_api_key="test-key-123", gemini_base_url=stub.url,
-                             llm_max_retries=2, embedding_dim=16, llm_timeout_s=10))
+                             gemini_model="gemini-3.5-flash", gemini_fallback_model="", llm_max_retries=2, embedding_dim=16, llm_timeout_s=10))
 
 
 def posts(stub):
@@ -97,16 +97,17 @@ def test_generate_request_shape_and_response_parsing(gs, stub):
     llm = GeminiLLM(gs)
     res = llm.generate("hello", system="be brief", schema=AnswerOut, temperature=0.1, max_tokens=500)
     r = posts(stub)[0]
-    assert r["path"].endswith("/models/gemini-2.5-flash:generateContent") and r["key"] == "test-key-123"
+    assert r["path"].endswith("/models/gemini-3.5-flash:generateContent") and r["key"] == "test-key-123"
     body = r["body"]
     assert body["systemInstruction"]["parts"][0]["text"] == "be brief"
     assert body["generationConfig"]["responseMimeType"] == "application/json"
     assert body["generationConfig"]["maxOutputTokens"] == 500 and body["generationConfig"]["temperature"] == 0.1
-    assert res.text.startswith("{") and res.usage["total_tokens"] == 18 and res.model == "gemini-2.5-flash" and res.provider == "gemini"
+    assert res.text.startswith("{") and res.usage["total_tokens"] == 18 and res.model == "gemini-3.5-flash" and res.provider == "gemini"
 
 
 def test_thinking_budget_forwarded_only_for_25_family(gs, stub):
     gs.gemini_thinking_budget = 0
+    gs.gemini_model = "gemini-2.5-flash"             # 2.5 family: budget is forwarded (retired for new keys, still valid for old ones)
     GeminiLLM(gs).generate("x")
     tc = posts(stub)[0]["body"]["generationConfig"]["thinkingConfig"]
     assert (tc.get("thinkingBudget", tc.get("thinking_budget"))) == 0          # the SDK may emit camel- or snake-case
@@ -171,25 +172,75 @@ def test_circuit_breaker_opens_after_repeated_failures(gs, stub, monkeypatch):
 
 
 def test_unavailable_model_without_fallback_is_a_clear_error(gs, stub):
-    stub.models_missing = {"gemini-2.5-flash"}
+    stub.models_missing = {"gemini-3.5-flash"}
     with pytest.raises(ProviderError) as e:
         GeminiLLM(gs).generate("hi")
     assert e.value.code == "model_not_found" and "GEMINI_MODEL" in e.value.message
 
 
 def test_explicit_fallback_model_is_used_and_reported(gs, stub):
-    stub.models_missing = {"gemini-2.5-flash"}
+    stub.models_missing = {"gemini-3.5-flash"}
     gs.gemini_fallback_model = "gemini-3-flash"
     res = GeminiLLM(gs).generate("hi")
     assert res.model == "gemini-3-flash"                         # never silent: the response says which model answered
-    assert [r["path"].split("/models/")[1].split(":")[0] for r in posts(stub)] == ["gemini-2.5-flash", "gemini-3-flash"]
+    assert [r["path"].split("/models/")[1].split(":")[0] for r in posts(stub)] == ["gemini-3.5-flash", "gemini-3-flash"]
+
+
+def _models_called(stub):
+    return [r["path"].split("/models/")[1].split(":")[0] for r in posts(stub)]
+
+
+@pytest.mark.parametrize("status,body_status", [(503, "UNAVAILABLE"), (500, "INTERNAL"), (429, "RESOURCE_EXHAUSTED")])
+def test_overloaded_primary_falls_back_to_configured_model_and_reports_it(gs, stub, monkeypatch, status, body_status):
+    """Regression: gemini-3.5-flash returned 503 'high demand' for hours; the fallback only used to cover 404."""
+    monkeypatch.setattr("time.sleep", lambda s: None)
+    gs.gemini_fallback_model = "gemini-3.1-flash-lite"
+    stub.script = [(status, {"error": {"code": status, "message": "high demand", "status": body_status}})]
+    res = GeminiLLM(gs).generate("hi")
+    assert res.model == "gemini-3.1-flash-lite"                  # never silent: the response names the model that answered
+    assert _models_called(stub) == ["gemini-3.5-flash", "gemini-3.1-flash-lite"]
+
+
+def test_fallback_not_used_for_auth_billing_or_bad_request(gs, stub):
+    gs.gemini_fallback_model = "gemini-3.1-flash-lite"
+    for status, code in [(403, "provider_auth"), (402, "provider_billing"), (400, "provider_bad_request")]:
+        stub.requests.clear()
+        stub.script = [(status, {"error": {"code": status, "message": "nope", "status": "X"}})]
+        with pytest.raises(ProviderError) as e:
+            GeminiLLM(gs).generate("hi")
+        assert e.value.code == code and _models_called(stub) == ["gemini-3.5-flash"], status
+
+
+def test_both_models_overloaded_still_raises_unavailable(gs, stub, monkeypatch):
+    monkeypatch.setattr("time.sleep", lambda s: None)
+    gs.gemini_fallback_model = "gemini-3.1-flash-lite"
+    gs.llm_max_retries = 0
+    stub.script = [(503, {"error": {"code": 503, "message": "down", "status": "UNAVAILABLE"}})] * 2
+    with pytest.raises(ProviderUnavailable):
+        GeminiLLM(gs).generate("hi")
+    assert _models_called(stub) == ["gemini-3.5-flash", "gemini-3.1-flash-lite"]
+
+
+def test_fallback_equal_to_primary_is_not_called_twice(gs, stub):
+    gs.gemini_fallback_model = gs.gemini_model
+    stub.script = [(503, {"error": {"code": 503, "message": "down", "status": "UNAVAILABLE"}})]
+    gs.llm_max_retries = 0
+    with pytest.raises(ProviderUnavailable):
+        GeminiLLM(gs).generate("hi")
+    assert _models_called(stub) == ["gemini-3.5-flash"]
+
+
+def test_shipped_defaults_are_models_available_to_new_keys(tmp_path):
+    d = Settings(env="test", data_dir=tmp_path)
+    assert d.gemini_model == "gemini-3.5-flash" and d.gemini_fallback_model == "gemini-3.1-flash-lite"
 
 
 def test_health_check(gs, stub):
     h = GeminiLLM(gs).health()
-    assert h["ok"] and h["model"] == "gemini-2.5-flash"
-    stub.models_missing = {"gemini-2.5-flash"}
-    gs2 = finalize(Settings(env="test", data_dir=gs.data_dir, gemini_api_key="k", gemini_base_url=stub.url))
+    assert h["ok"] and h["model"] == "gemini-3.5-flash"
+    stub.models_missing = {"gemini-3.5-flash"}
+    gs2 = finalize(Settings(env="test", data_dir=gs.data_dir, gemini_api_key="k", gemini_base_url=stub.url,
+                            gemini_model="gemini-3.5-flash", gemini_fallback_model=""))
     h = GeminiLLM(gs2).health()
     assert not h["ok"] and "not available" in h["detail"]
 
