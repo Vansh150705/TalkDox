@@ -160,6 +160,32 @@ def test_unsupported_claim_is_flagged_and_lowers_confidence(client, auth, kb):
     assert d["confidence"]["level"] != "high"
 
 
+def _answered_by_fallback(llm, name="fallback-model"):
+    """Make the fake LLM behave like GeminiLLM after a fallback: configured model != model that actually answered."""
+    orig = llm._call
+
+    def call(*a, **kw):
+        text, usage, _ = orig(*a, **kw)
+        return text, usage, name
+    llm._call = call
+
+
+def test_chat_reports_the_model_that_actually_answered_not_the_configured_one(client, auth, kb):
+    """Regression: the response used to say the *configured* model even when the fallback produced the answer."""
+    _answered_by_fallback(client.state.llm)
+    d = ask(client, auth, "How long is the warranty?", source_ids=[kb["a"]]).json()
+    assert d["status"] == "answered"
+    assert d["model"]["name"] == "fallback-model", d["model"]
+
+
+def test_tools_report_the_model_that_actually_answered(client, auth, kb):
+    _answered_by_fallback(client.state.llm)
+    r = client.post("/api/tools/summary", json={"source_ids": [kb["a"]], "options": {}}, headers=auth)
+    assert r.status_code == 200 and r.json()["model"]["name"] == "fallback-model", r.json().get("model")
+    r = client.post("/api/tools/email", json={"source_ids": [kb["a"]], "options": {"goal": "share the warranty terms"}}, headers=auth)
+    assert r.status_code == 200 and r.json()["model"]["name"] == "fallback-model", r.json().get("model")
+
+
 def test_markdown_images_and_html_stripped_from_answers(client, auth, kb):
     def evil(prompt, system, schema):
         if getattr(schema, "__name__", "") == "AnswerOut":

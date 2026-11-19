@@ -124,7 +124,7 @@ class AnswerService:
             payload = self._answer_lookup(wid, cid, question, plan, by_id, hist, mode, persona, trace, stage, cancelled)
 
         payload["trace"] = trace.steps
-        payload["model"] = {"provider": self.llm.provider, "name": self.llm.model}
+        payload.setdefault("model", {"provider": self.llm.provider, "name": self.llm.model})
         self.save_message(wid, cid, "user", question, {"source_ids": plan.source_ids})
         payload["message_id"] = self.save_message(wid, cid, "assistant", payload["answer"], payload)
         payload["conversation_id"] = cid
@@ -227,7 +227,9 @@ class AnswerService:
         return {"answer": text, "answerable": out.answerable, "status": status, "citations": v.citations,
                 "flags": [f.as_dict() for f in v.flags], "confidence": conf,
                 "followups": [f.strip() for f in out.followups if f.strip()][:3], "related": [], "intent": plan.intent,
-                "scope_note": plan.note, "sources_used": used, "usage": res_llm.usage, "citation_check_limited": v.limited}
+                "scope_note": plan.note, "sources_used": used, "usage": res_llm.usage, "citation_check_limited": v.limited,
+                # the model that actually answered (differs from the configured one after a fallback)
+                "model": {"provider": res_llm.provider, "name": res_llm.model}}
 
     def _cite_like(self, ch: dict, n: int, quote: str) -> dict:
         return {"id": f"R{n}", "chunk_id": ch["id"], "source_id": ch["source_id"], "source_name": ch.get("source_name"),
